@@ -14,7 +14,7 @@ class Ftg(commands.Bot):
     __slots__ = ("_extensions", "_db_url", "_token", "_raw_uptime", "db", "cache")
 
     def __init__(self, **kwargs):
-        super().__init__(command_prefix=kwargs.pop('command_prefix', '.'), **kwargs)
+        super().__init__(**kwargs)
         self._extensions = kwargs.pop('extensions', None)
         self._db_url = kwargs.pop('db_url', None)
         self._token = kwargs.pop('token', None)
@@ -53,4 +53,4 @@ class Ftg(commands.Bot):
             print(f'{self.user} is ready.')
 
 
-Ftg(token=config.get('token', None), extensions=listdir('../cogs'))
+Ftg(token=config.get('token', None), extensions=listdir('../cogs'), command_prefix='gn ')
