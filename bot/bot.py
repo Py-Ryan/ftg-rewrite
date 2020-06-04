@@ -14,7 +14,7 @@ class Ftg(commands.Bot):
     __slots__ = ("_extensions", "_db_url", "_token", "_raw_uptime", "db", "cache")
 
     def __init__(self, **kwargs):
-        super().__init__(command_prefix=kwargs.pop('command_prefix', self.prefix_getter), **kwargs)
+        super().__init__(command_prefix=kwargs.pop('command_prefix', '.'), **kwargs)
         self._extensions = kwargs.pop('extensions', None)
         self._db_url = kwargs.pop('db_url', None)
         self._token = kwargs.pop('token', None)
@@ -33,11 +33,6 @@ class Ftg(commands.Bot):
         """Generator yielding the a (filename, extension) tuple of the extensions."""
         for cog in self._extensions:
             yield path.splitext(cog)
-
-    def prefix_getter(self, bot, message):
-        prefix = self.cache.setdefault(str(message.guild.id), {}).setdefault("prefix", 'suddy ')
-        print(self.cache)
-        return commands.when_mentioned_or(prefix)(bot, message)
 
     def run(self):
         """Connects the bot to discord & mounts the cogs."""
@@ -58,4 +53,4 @@ class Ftg(commands.Bot):
             print(f'{self.user} is ready.')
 
 
-suddy = Suddy(token=config.get('token', None), extensions=listdir('../cogs'))
+Ftg(token=config.get('token', None), extensions=listdir('../cogs'))
