@@ -11,6 +11,7 @@ toml = "*"
 asyncpg = "*"
 discord-flags = "*"
 jishaku = "*"
+aiohttp = "*"
 
 [requires]
 python_version = "3.8"
