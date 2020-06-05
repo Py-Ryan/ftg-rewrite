@@ -2,7 +2,7 @@
 A rewrote version of Ft.-Gunna
 
 # version:
-0.2.1
+0.3.2
 
 # updates:
     0.1.0:
@@ -12,15 +12,31 @@ A rewrote version of Ft.-Gunna
         - Built-in aiohttp.ClientSession() since aiohttp suggests this
         - Implemented Jishaku
         - Ftg.extensions yields None if no extensions are passed to the constructor
-        - Setup DB parsing for guild specific data such as custom prefixes.
+        - DB parsing for guild specific data such as custom prefixes.
         - Ftg now has a cache
-            ->
-                - This cache is used to store
-                    ->
-                        - Prefixes for a guild during init and during runtime.
-                        - Deleted & edited messages. 
-        - Added a new cog `config`
-            ->
-                - Features commands relating to guild & user configuration
-                    ->
-                        - Added a change prefix command
+            -> This cache is used to store
+                    -> Prefixes for a guild during init and during runtime.
+                    -> Deleted & edited messages. 
+        - Added a new extension `config`
+            -> Features commands relating to guild & user configuration
+            -> Added a change prefix command
+    0.3.2:
+        - Added a new extension `fun`
+            -> Added `binary` command for binary conversions.
+                -> Normal input will be converted to binary
+                -> 8-bit bytes seperated by spaces will be converted back into utf-8.
+            -> Added `caesar` command for caesar cipher.
+                -> Encrypt a string of text with a 4-shift caesar cipher.
+            -> Added `catfact` command for random cat facts, UwU.
+                -> Random cat facts.       
+        - Shortened down the config loading in `bot.py`
+        - A ValueError is now raised in `bot.py` if vital toml keys are missing from the toml config.
+        - `Ftg.extensions` now checks the type of _extensions and raises a warning if problems are found.
+        - Use `set(config)` over `config.keys()` in the TOML key check inside of `bot.py`
+        - Changed common cooldown time from 2 to 1.5
+            -> With the exception of the epic catfact command.
+        - Add a debug error handler in `bot.py`. This is not production.
+        - Updated to discord.py-1.4.0a
+        
+        Known Issues:
+            Failing to POST to hastebin when `data` has a `__len__` of over 300.
