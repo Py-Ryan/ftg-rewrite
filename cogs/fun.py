@@ -1,4 +1,5 @@
-import random
+from discord import Embed
+from random import randint
 from discord.ext import commands
 from string import ascii_letters as alphabet_
 
@@ -23,7 +24,7 @@ class FunCog(commands.Cog):
             url_code = data.get('key', None)
             if url_code:
                 await ctx.send(
-                    f'{ctx.author.mention}, **here is your converted text!\nhttps://hastebin.com/{url_code}**')
+                    f'{ctx.author.mention}, https://hastebin.com/{url_code}')
             else:
                 raise RuntimeError(f'Failed to upload text to hastebin: {data.get("message", None)}')
 
@@ -31,20 +32,15 @@ class FunCog(commands.Cog):
     @commands.cooldown(1, 2, commands.BucketType.guild)
     async def caesar(self, ctx, *, text):
         """Convert plain text into a caesar cipher. Default shift factor is 4."""
-        shifted = alphabet_[4:] + alphabet_[:4]
-        table = str.maketrans(alphabet_, shifted)
+        table = str.maketrans(alphabet_, alphabet_[4:] + alphabet_[:4])
         await ctx.send(f"{ctx.author.mention}, *{text.translate(table)}*")
 
-    @caesar.command(name='swap')
-    @commands.cooldown(1, 2, commands.BucketType.guild)
-    async def caesar_simple(self, ctx, * text):
-        output = ""
-        for character in text:
-            char = random.choice(text)
-            if output.count(char) <= text.count(char):
-                output += char
-
-        await ctx.send(f'{ctx.author.mention}, **here you are**:\n*{output}*')
+    @commands.command()
+    @commands.cooldown(1, 0.75, commands.BucketType.guild)
+    async def catfact(self, ctx):
+        async with self.bot.session.get("https://catfact.ninja/fact?max_length=100") as g:
+            embed = Embed(description=(await g.json())["fact"], colour=randint(0, 0xffffff))
+            await ctx.send(embed=embed)
 
 
 def setup(bot):
