@@ -11,7 +11,7 @@ from aiohttp import ClientSession
 with open('config.toml', 'r') as file:
     config = toml.load(file).get('credentials', None)
 
-    if not {'token', 'db_url'} <= config.keys():
+    if not {'token', 'db_url'} <= set(config):
         raise ValueError("TOML config file missing `token` and `db_url` keys.")
 
 
