@@ -12,7 +12,7 @@ with open('config.toml', 'r') as file:
     config = toml.load(file).get('credentials', None)
 
     if not {'token', 'db_url'} <= set(config):
-        raise ValueError("TOML config file missing `token` and `db_url` keys.")
+        raise ValueError("TOML config file missing `token` and/or `db_url` keys.")
 
 
 class Ftg(commands.Bot):
