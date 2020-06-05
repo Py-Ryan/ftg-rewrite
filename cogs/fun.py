@@ -27,14 +27,10 @@ class FunCog(commands.Cog):
 
     @commands.group(invoke_without_command=True)
     @commands.cooldown(1, 2, commands.BucketType.guild)
-    async def caesar(self, ctx, shift_factor=4, *, text):
-        """Convert plain text into a caesar cipher. Default shift factor is 4."""
-        try:
-            shift_factor = int(shift_factor)
-        except ValueError:
-            shift_factor = None
+    async def caesar(self, ctx, *, text):
+        """Convert plain text into a caesar cipher with a randomized shift factor."""
 
-        await ctx.send(f'*{"".join(chr(ord(char) + shift_factor or random.randint(1, 5)) for char in text)}*')
+        await ctx.send(f'*{"".join(chr(ord(char) + random.randint(1, 5)) for char in text)}*')
 
 
 def setup(bot):
