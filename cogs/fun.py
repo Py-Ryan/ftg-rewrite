@@ -25,8 +25,6 @@ class FunCog(commands.Cog):
             if url_code:
                 await ctx.send(
                     f'{ctx.author.mention}, https://hastebin.com/{url_code}')
-            else:
-                raise RuntimeError(f'Failed to upload text to hastebin: {data.get("message", None)}')
 
     @commands.group(invoke_without_command=True)
     @commands.cooldown(1, 2, commands.BucketType.guild)
