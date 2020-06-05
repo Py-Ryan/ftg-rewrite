@@ -1,5 +1,4 @@
 import toml
-
 from os import listdir, path
 from collections import deque
 from datetime import datetime
