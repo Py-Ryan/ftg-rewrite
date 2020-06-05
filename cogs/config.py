@@ -11,7 +11,7 @@ class ConfigCog(commands.Cog):
 
     @commands.command()
     @commands.has_permissions(administrator=True)
-    @commands.cooldown(1, 2, commands.BucketType.guild)
+    @commands.cooldown(1, 1.5, commands.BucketType.guild)
     async def prefix(self, ctx, prefix):
         """Edit the prefix for the current guild."""
         message = await ctx.send(f"{ctx.author.mention}, change the guild prefix to `{prefix}`?")

@@ -10,7 +10,7 @@ class FunCog(commands.Cog):
         self.bot = bot
 
     @commands.command()
-    @commands.cooldown(1, 2, commands.BucketType.guild)
+    @commands.cooldown(1, 1.5, commands.BucketType.guild)
     async def binary(self, ctx, *, text):
         """Convert text to binary or vise versa. Enter binary bytes separated by spaces to convert into utf-8."""
         try:
@@ -27,7 +27,7 @@ class FunCog(commands.Cog):
                     f'{ctx.author.mention}, https://hastebin.com/{url_code}')
 
     @commands.group(invoke_without_command=True)
-    @commands.cooldown(1, 2, commands.BucketType.guild)
+    @commands.cooldown(1, 1.5, commands.BucketType.guild)
     async def caesar(self, ctx, *, text):
         """Convert plain text into a caesar cipher. Default shift factor is 4."""
         table = str.maketrans(alphabet_, alphabet_[4:] + alphabet_[:4])
