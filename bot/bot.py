@@ -80,6 +80,12 @@ class Ftg(commands.Bot):
         if self._raw_uptime <= datetime.utcnow():
             print(f'{self.user} is ready.')
 
+    async def on_command_error(self, context, exception):
+        exception = getattr(exception, 'original', exception)
+
+        if not isinstance(exception, (commands.CommandOnCooldown, commands.CommandNotFound)):
+            raise exception
+
 
 def get_prefix(bot, message):
     guild = bot.cache.setdefault(
