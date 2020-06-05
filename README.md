@@ -2,12 +2,12 @@
 A rewrote version of Ft.-Gunna
 
 # version:
-0.2.0
+0.2.1
 
 # updates:
     0.1.0:
         Barebones version.
-    0.2.0:
+    0.2.1:
         - Dynamic prefixing
         - Built-in aiohttp.ClientSession() since aiohttp suggests this
         - Implemented Jishaku
