@@ -9,8 +9,10 @@ from aiohttp import ClientSession
 
 
 with open('config.toml', 'r') as file:
-    config = toml.load(file)
-    config = config.get('credentials', None)
+    config = toml.load(file).get('credentials', None)
+
+    if not {'token', 'db_url'} <= config.keys():
+        raise ValueError("TOML config file missing `token` and `db_url` keys.")
 
 
 class Ftg(commands.Bot):
@@ -34,8 +36,10 @@ class Ftg(commands.Bot):
     @property
     def extensions(self):
         """Generator yielding the a (filename, extension) tuple of the extensions."""
-        if not self._extensions:
-            yield None
+        if not self._extensions or not isinstance(self._extensions, (tuple, list, set)):
+            raise RuntimeWarning(
+                f"Invalid type passed to {type(self).__name__}._extensions. Must be one of tuple, list, or set. "
+                "Extensions will not be loaded")
         else:
             for cog in self._extensions:
                 yield path.splitext(cog)
