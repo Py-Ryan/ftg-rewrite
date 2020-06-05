@@ -1,3 +1,4 @@
+import random
 from discord.ext import commands
 
 
@@ -20,10 +21,20 @@ class FunCog(commands.Cog):
 
             url_code = data.get('key', None)
             if url_code:
-                await ctx.send(
-                    f'{ctx.author.mention}, **here is your converted text!\nhttps://hastebin.com/{url_code}**')
+                await ctx.send(f'{ctx.author.mention}, https://hastebin.com/{url_code}')
             else:
                 raise RuntimeError(f'Failed to upload text to hastebin: {data.get("message", None)}')
+
+    @commands.group(invoke_without_command=True)
+    @commands.cooldown(1, 2, commands.BucketType.guild)
+    async def caesar(self, ctx, shift_factor=4, *, text):
+        """Convert plain text into a caesar cipher. Default shift factor is 4."""
+        try:
+            shift_factor = int(shift_factor)
+        except ValueError:
+            shift_factor = None
+
+        await ctx.send(f'*{"".join(chr(ord(char) + shift_factor or random.randint(1, 5)) for char in text)}*')
 
 
 def setup(bot):
