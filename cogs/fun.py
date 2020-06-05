@@ -24,7 +24,7 @@ class FunCog(commands.Cog):
 
                 url_code = data.get('key', None)
                 if url_code:
-                    await ctx.send(f'{ctx.author.mention}, https://hastebin.com/{url_code}')
+                    await ctx.send(f'{ctx.author.mention}, https://hastebin.com/raw/{url_code}')
         else:
             await ctx.send(f'{ctx.author.mention}, {output}',
                            allowed_mentions=AllowedMentions(everyone=False, roles=False))
