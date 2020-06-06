@@ -35,8 +35,7 @@ class GeneralCog(commands.Cog):
                 if not snwflk.id == self.bot.user.id else
                 f'[Source Code](https://github.com/Py-Ryan/ftg-rewrite)'
             )
-            .add_field(
-                name='**Account Created**', value=naturaltime(getattr(snwflk, 'created_at', 'None')), inline=True)
+            .add_field(name='**Account Created**', value=naturaltime(snwflk.created_at), inline=True)
             .add_field(name='**Joined**', value=naturaltime(getattr(snwflk, 'joined_at', 'None')), inline=True)
             .add_field(name='**User ID**', value=snwflk.id, inline=False)
             .add_field(name='**Top Role**', value=str(getattr(snwflk, 'top_role', 'None')), inline=False)
@@ -46,6 +45,9 @@ class GeneralCog(commands.Cog):
         if isinstance(snwflk, User):
             for i in (1, 3):
                 embed.remove_field(i)
+
+            if ctx.guild:
+                embed.set_footer(text='This user is not in this guild.')
 
         if snwflk is ctx.guild.me:
             async with self.bot.session.get(
