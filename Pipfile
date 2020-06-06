@@ -12,6 +12,7 @@ asyncpg = "*"
 discord-flags = "*"
 jishaku = "*"
 aiohttp = "*"
+humanize = "*"
 
 [requires]
 python_version = "3.8"
