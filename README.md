@@ -2,11 +2,12 @@
 A rewrote version of Ft.-Gunna
 
 # version:
-0.3.2
+0.3.3
 
 # updates:
     0.1.0:
         Barebones version.
+        
     0.2.1:
         - Dynamic prefixing
         - Built-in aiohttp.ClientSession() since aiohttp suggests this
@@ -15,11 +16,12 @@ A rewrote version of Ft.-Gunna
         - DB parsing for guild specific data such as custom prefixes.
         - Ftg now has a cache
             -> This cache is used to store
-                    -> Prefixes for a guild during init and during runtime.
+                    -> Prefixes for a guild during `Ftg.run` and during runtime.
                     -> Deleted & edited messages. 
         - Added a new extension `config`
             -> Features commands relating to guild & user configuration
             -> Added a change prefix command
+            
     0.3.2:
         - Added a new extension `fun`
             -> Added `binary` command for binary conversions.
@@ -29,7 +31,6 @@ A rewrote version of Ft.-Gunna
                 -> Encrypt a string of text with a 4-shift caesar cipher.
             -> Added `catfact` command for random cat facts, UwU.
                 -> Random cat facts.       
-        - Shortened down the config loading in `bot.py`
         - A ValueError is now raised in `bot.py` if vital toml keys are missing from the toml config.
         - `Ftg.extensions` now checks the type of _extensions and raises a warning if problems are found.
         - Use `set(config)` over `config.keys()` in the TOML key check inside of `bot.py`
@@ -38,5 +39,8 @@ A rewrote version of Ft.-Gunna
         - Add a debug error handler in `bot.py`. This is not production.
         - Updated to discord.py-1.4.0a
         
-        Known Issues:
-            Failing to POST to hastebin when `data` has a `__len__` of over 300.
+    0.3.3:
+        - Fixed `binary` command breaking with long inputs.
+        - Edited `binary` command minimum length for a hastebin post to 150 rather than 100.
+        - Added an additional check to `binary` to allow users to convert numbers into binary.
+        - Change `caesar` back to a command rather than a group
