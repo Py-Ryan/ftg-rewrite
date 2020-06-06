@@ -58,7 +58,6 @@ class FunCog(commands.Cog):
         ip = re.search(type(self).ip_regex, ip)
         try:
             string = f'https://api.ipgeolocation.io/ipgeo?apiKey={self.bot.api["ip"]}&ip={ip.string}'
-
             async with self.bot.session.get(string) as g:
                 info = await g.json()
 
