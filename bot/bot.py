@@ -90,12 +90,14 @@ class Ftg(commands.Bot):
 
 
 def get_prefix(bot, message):
-    guild = bot.cache.setdefault(
-        str(message.guild.id),
-        {'prefix': 'gn ', 'messages': {'deleted': deque(), 'edited': deque()}}
-    )
-
-    return commands.when_mentioned_or(guild["prefix"])(bot, message)
+    if message.guild is not None:
+        guild = bot.cache.setdefault(
+            str(message.guild.id),
+            {'prefix': 'gn ', 'messages': {'deleted': deque(), 'edited': deque()}}
+        )
+        return commands.when_mentioned_or(guild["prefix"])(bot, message)
+    else:
+        return commands.when_mentioned_or('gn ')(bot, message)
 
 
 ftg = Ftg(
