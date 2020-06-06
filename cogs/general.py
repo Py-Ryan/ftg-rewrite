@@ -1,8 +1,8 @@
 from random import randint
-from typing import Optional
 from humanize import naturaltime
 from discord.ext import commands
-from discord import User, Embed, Member, Status, Colour
+from typing import Union, Optional
+from discord import User, Embed, Member, Status, Colour, HTTPException
 
 
 class GeneralCog(commands.Cog):
@@ -14,8 +14,11 @@ class GeneralCog(commands.Cog):
     @commands.command()
     @commands.guild_only()
     @commands.cooldown(1, 1.5, commands.BucketType.guild)
-    async def info(self, ctx, *, snowflake: Optional[Member]):
-        snowflake = snowflake or ctx.guild.get_member(self.bot.user.id)
+    async def info(self, ctx, *, snwflk: Union[Member, int] = None):
+        try:
+            snwflk = ctx.guild.get_member(getattr(snwflk, 'id', snwflk)) or await self.bot.fetch_user(snwflk)
+        except HTTPException:
+            snwflk = ctx.guild.get_member(self.bot.user.id)
 
         cases = {
             Status.online: Colour.green(),
@@ -26,21 +29,25 @@ class GeneralCog(commands.Cog):
 
         embed = (
             Embed(
-                title=str(snowflake),
-                colour=cases[snowflake.status],
-                description=
-                f'[Avatar Link]({snowflake.avatar_url})'
-                if not snowflake.id == self.bot.user.id else
+                title=str(snwflk),
+                colour=cases[snwflk.status] if not isinstance(snwflk, User) else Colour.dark_grey(),
+                description=f'[Avatar Link]({snwflk.avatar_url})'
+                if not snwflk.id == self.bot.user.id else
                 f'[Source Code](https://github.com/Py-Ryan/ftg-rewrite)'
             )
-            .add_field(name='**Account Created:**', value=naturaltime(snowflake.created_at), inline=True)
-            .add_field(name='**Joined:**', value=naturaltime(snowflake.joined_at), inline=True)
-            .add_field(name='**User ID:**', value=snowflake.id, inline=False)
-            .add_field(name='**Top Role:**', value=str(snowflake.top_role), inline=False)
-            .set_thumbnail(url=str(snowflake.avatar_url_as(static_format='png')))
+            .add_field(
+                name='**Account Created**', value=naturaltime(getattr(snwflk, 'created_at', 'None')), inline=True)
+            .add_field(name='**Joined**', value=naturaltime(getattr(snwflk, 'joined_at', 'None')), inline=True)
+            .add_field(name='**User ID**', value=snwflk.id, inline=False)
+            .add_field(name='**Top Role**', value=str(getattr(snwflk, 'top_role', 'None')), inline=False)
+            .set_thumbnail(url=str(snwflk.avatar_url_as(static_format='png')))
         )
 
-        if snowflake is ctx.guild.me:
+        if isinstance(snwflk, User):
+            for i in (1, 3):
+                embed.remove_field(i)
+
+        if snwflk is ctx.guild.me:
             async with self.bot.session.get(
                     "https://raw.githubusercontent.com/Py-Ryan/ftg-rewrite/master/README.md") as get:
                 version = (await get.text()).split("\n")[4]
