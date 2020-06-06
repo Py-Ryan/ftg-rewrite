@@ -21,6 +21,7 @@ class Ftg(commands.Bot):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self._extensions = kwargs.pop('extensions', [])
+        self.api = {'ip': kwargs.pop('ip_key', None)}
         self._db_url = kwargs.pop('db_url', None)
         self._token = kwargs.pop('token', None)
         self._raw_uptime = datetime.utcnow()
@@ -98,10 +99,9 @@ def get_prefix(bot, message):
 
 
 ftg = Ftg(
-    token=config.get('token', None),
+    **config,
     extensions=listdir('../cogs'),
     command_prefix=get_prefix,
-    db_url=config.get('db_url', None),
     activity=Game('default prefix is mention')
 )
 ftg.run()
