@@ -1,4 +1,5 @@
 import toml
+from discord import Game
 from os import listdir, path
 from collections import deque
 from datetime import datetime
@@ -100,6 +101,7 @@ ftg = Ftg(
     token=config.get('token', None),
     extensions=listdir('../cogs'),
     command_prefix=get_prefix,
-    db_url=config.get('db_url', None)
+    db_url=config.get('db_url', None),
+    activity=Game('default prefix is mention')
 )
 ftg.run()
