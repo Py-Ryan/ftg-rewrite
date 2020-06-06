@@ -45,17 +45,16 @@ class Meta(commands.Cog):
         )
 
         if isinstance(snwflk, User):
-            for i in (1, 3):
+            embed.set_footer(text='This user is not in this guild.')
+            for i in (-1, -2):
                 embed.remove_field(i)
-
-            if ctx.guild:
-                embed.set_footer(text='This user is not in this guild.')
 
         if snwflk is ctx.guild.me:
             async with self.bot.session.get(
                     "https://raw.githubusercontent.com/Py-Ryan/ftg-rewrite/master/README.md") as get:
                 version = (await get.text()).split("\n")[4]
-                embed.set_footer(text=f'Developer: well in that case#0082 (700091773695033505) | Version: {version}')
+
+            embed.set_footer(text=f'Developer: well in that case#0082 (700091773695033505) | Version: {version}')
 
         await ctx.send(embed=embed)
 
