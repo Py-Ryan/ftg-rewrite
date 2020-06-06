@@ -12,13 +12,16 @@ class FunCog(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
+    binary_regex = re.compile(r'^[0-1]{8}$')
+    ip_regex = re.compile(r'\b(?:[0-9]{1,3}\.){3}[0-9]{1,3}\b')
+
     @commands.command()
     @commands.cooldown(1, 1.5, commands.BucketType.guild)
     async def binary(self, ctx, *, text):
         """Convert text to binary or vise versa. Enter binary bytes separated by spaces to convert into ASCII."""
         try:
             binary = insert_spaces(text.strip(), 8)
-            if all(re.match(r'^[0-1]{8}$', b) for b in binary) and len(text) % 8:
+            if all(re.match(type(self).binary_regex, b) for b in binary) and len(text) % 8:
                 output = ''.join([chr(int(byte, 2)) for byte in binary])
             else:
                 raise ValueError
@@ -48,6 +51,33 @@ class FunCog(commands.Cog):
         async with self.bot.session.get('https://catfact.ninja/fact?max_length=100') as g:
             embed = Embed(description=(await g.json())['fact'], colour=randint(0, 0xffffff))
             await ctx.send(embed=embed)
+
+    @commands.command()
+    @commands.cooldown(1, 1.5, commands.BucketType.guild)
+    async def ip(self, ctx, *, ip):
+        ip = re.search(type(self).ip_regex, ip)
+        try:
+            string = f'https://api.ipgeolocation.io/ipgeo?apiKey={self.bot.api["ip"]}&ip={ip.string}'
+
+            async with self.bot.session.get(string) as g:
+                info = await g.json()
+
+            embed = (
+                Embed(title=ip.string, colour=randint(0, 0xffffff))
+                .add_field(name='**Continent:**', value=info['continent_name'], inline=True)
+                .add_field(name='**Country:**', value=info['country_name'], inline=True)
+                .add_field(name='**State/Province:**', value=info['state_prov'], inline=False)
+                .add_field(name='**City:**', value=info['city'], inline=True)
+                .add_field(name='**Zip:**', value=info['zipcode'], inline=False)
+                .set_footer(
+                    text=f'Calling Code: {info["calling_code"]} | Lat: {info["latitude"]} | Long: {info["longitude"]}'
+                )
+                .set_thumbnail(url=info['country_flag'])
+            )
+
+            await ctx.send(embed=embed)
+        except (AttributeError, KeyError):
+            await ctx.send(f'{ctx.author.mention}, Invalid IP.')
 
 
 def setup(bot):
