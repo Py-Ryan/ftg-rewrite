@@ -7,6 +7,7 @@ from string import ascii_letters as alphabet_
 
 
 class FunCog(commands.Cog):
+    """Cog used for fun commands."""
 
     def __init__(self, bot):
         self.bot = bot
