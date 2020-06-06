@@ -6,7 +6,7 @@ from textwrap import wrap as insert_spaces
 from string import ascii_letters as alphabet_
 
 
-class FunCog(commands.Cog):
+class Fun(commands.Cog):
     """Cog used for fun commands."""
 
     def __init__(self, bot):
@@ -80,4 +80,4 @@ class FunCog(commands.Cog):
 
 
 def setup(bot):
-    bot.add_cog(FunCog(bot))
+    bot.add_cog(Fun(bot))
