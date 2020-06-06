@@ -2,6 +2,7 @@ import re
 from random import randint
 from discord.ext import commands
 from discord import Embed, AllowedMentions
+from textwrap import wrap as insert_spaces
 from string import ascii_letters as alphabet_
 
 
@@ -15,8 +16,8 @@ class FunCog(commands.Cog):
     async def binary(self, ctx, *, text):
         """Convert text to binary or vise versa. Enter binary bytes separated by spaces to convert into ASCII."""
         try:
-            binary = text.split()
-            if all(re.match(r'^[0-1]{8}$', b) for b in binary):
+            binary = insert_spaces(text.strip(), 8)
+            if all(re.match(r'^[0-1]{8}$', b) for b in binary) and len(text) % 8:
                 output = ''.join([chr(int(byte, 2)) for byte in binary])
             else:
                 raise ValueError
