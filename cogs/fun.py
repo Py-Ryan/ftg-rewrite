@@ -15,18 +15,36 @@ class Fun(commands.Cog):
     binary_regex = re.compile(r'^[0-1]{8}$')
     ip_regex = re.compile(r'\b(?:[0-9]{1,3}\.){3}[0-9]{1,3}\b')
 
+    async def _haste_helper(self, ctx, output):
+        """Helper function that posts long outputs of conversion commands to a haste server."""
+        if len(output) >= 200:
+            async with self.bot.session.post('https://haste.crrapi.xyz/documents', data=output) as post:
+                url_code = (await post.json()).get('key', None)
+                if url_code:
+                    await ctx.send(f'{ctx.author.mention}, https://haste.crrapi.xyz/raw/{url_code}')
+        else:
+            await ctx.send(f'{ctx.author.mention}, {output}',
+                           allowed_mentions=AllowedMentions(everyone=False, roles=False))
+
+    @staticmethod
+    async def _attachment_helper(ctx):
+        output = ''
+        attachments = ctx.message.attachments
+
+        if attachments:
+            for attachment in attachments:
+                try:
+                    output += ''.join((await attachment.read()).decode('utf-8').replace(' ', '\n'))
+                except UnicodeDecodeError:
+                    return await ctx.send(f'{ctx.author.mention}, use text files.')
+
+        return output
+
     @commands.command()
     @commands.cooldown(1, 1.5, commands.BucketType.guild)
     async def binary(self, ctx, *, text=''):
         """Convert text to binary or vise versa."""
-
-        attachments = ctx.message.attachments
-        if attachments:
-            for attachment in attachments:
-                try:
-                    text += ''.join((await attachment.read()).decode('utf-8').replace(' ', '\n'))
-                except UnicodeDecodeError:
-                    return await ctx.send(f'{ctx.author.mention}, use text files.')
+        text = await type(self)._attachment_helper(ctx) or text
 
         try:
             binary = insert_spaces(text.strip(), 8)
@@ -37,41 +55,32 @@ class Fun(commands.Cog):
         except ValueError:
             output = ' '.join([bin(ord(char))[2:].zfill(8) for char in text])
 
-        if len(output) >= 200:
-            async with self.bot.session.post('https://haste.crrapi.xyz/documents', data=output) as post:
-                url_code = (await post.json()).get('key', None)
-                if url_code:
-                    await ctx.send(f'{ctx.author.mention}, https://haste.crrapi.xyz/raw/{url_code}')
-        else:
-            await ctx.send(f'{ctx.author.mention}, {output}',
-                           allowed_mentions=AllowedMentions(everyone=False, roles=False))
+        await self._haste_helper(ctx, output)
 
     @commands.command(name='hex')
     @commands.cooldown(1, 1.5, commands.BucketType.guild)
     async def _hex(self, ctx, *, text=''):
         """Convert text to hexadecimal or vice versa."""
-
-        attachments = ctx.message.attachments
-        if attachments:
-            for attachment in attachments:
-                try:
-                    text += ''.join((await attachment.read()).decode('utf-8').replace(' ', '\n'))
-                except UnicodeDecodeError:
-                    return await ctx.send(f'{ctx.author.mention}, use text files.')
+        text = await type(self)._attachment_helper(ctx) or text
 
         try:
             output = bytes.fromhex(text).decode('utf-8')
         except ValueError:
             output = ''.join([str(hex(ord(char)))[2:] for char in text])
 
-        if len(output) >= 200:
-            async with self.bot.session.post('https://haste.crrapi.xyz/documents', data=output) as post:
-                url_code = (await post.json()).get('key', None)
-                if url_code:
-                    await ctx.send(f'{ctx.author.mention}, https://haste.crrapi.xyz/raw/{url_code}')
-        else:
-            await ctx.send(f'{ctx.author.mention}, {output}',
-                           allowed_mentions=AllowedMentions(everyone=False, roles=False))
+        await self._haste_helper(ctx, output)
+
+    @commands.command()
+    @commands.cooldown(1, 1.5, commands.BucketType.guild)
+    async def morse(self, ctx, *, text=''):
+        """Convert text into morse code and vice versa."""
+        operator = 'decode' if {'.', '-', ' '}.issuperset(text) else 'encode'
+
+        async with self.bot.session.get(f'http://www.morsecode-api.de/{operator}?string={text}') as get:
+            key = 'morsecode' if operator == 'encode' else 'plaintext'
+            output = (await get.json()).get(key, None)
+
+        await self._haste_helper(ctx, output)
 
     @commands.command()
     @commands.cooldown(1, 1.5, commands.BucketType.guild)
