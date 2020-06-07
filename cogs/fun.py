@@ -17,7 +17,7 @@ class Fun(commands.Cog):
 
     @commands.command()
     @commands.cooldown(1, 1.5, commands.BucketType.guild)
-    async def binary(self, ctx, *, text=""):
+    async def binary(self, ctx, *, text=''):
         """Convert text to binary or vise versa."""
 
         attachments = ctx.message.attachments
@@ -46,6 +46,33 @@ class Fun(commands.Cog):
             await ctx.send(f'{ctx.author.mention}, {output}',
                            allowed_mentions=AllowedMentions(everyone=False, roles=False))
 
+    @commands.command(name='hex')
+    @commands.cooldown(1, 1.5, commands.BucketType.guild)
+    async def _hex(self, ctx, *, text=''):
+        """Convert text to hexadecimal or vice versa."""
+
+        attachments = ctx.message.attachments
+        if attachments:
+            for attachment in attachments:
+                try:
+                    text += ''.join((await attachment.read()).decode('utf-8').replace(' ', '\n'))
+                except UnicodeDecodeError:
+                    return await ctx.send(f'{ctx.author.mention}, use text files.')
+
+        try:
+            output = bytes.fromhex(text).decode('utf-8')
+        except ValueError:
+            output = ''.join([str(hex(ord(char)))[2:] for char in text])
+
+        if len(output) >= 150:
+            async with self.bot.session.post('https://haste.crrapi.xyz/documents', data=output) as post:
+                url_code = (await post.json()).get('key', None)
+                if url_code:
+                    await ctx.send(f'{ctx.author.mention}, https://haste.crrapi.xyz/raw/{url_code}')
+        else:
+            await ctx.send(f'{ctx.author.mention}, {output}',
+                           allowed_mentions=AllowedMentions(everyone=False, roles=False))
+
     @commands.command()
     @commands.cooldown(1, 1.5, commands.BucketType.guild)
     async def caesar(self, ctx, *, text):
@@ -64,6 +91,7 @@ class Fun(commands.Cog):
     @commands.command()
     @commands.cooldown(1, 1.5, commands.BucketType.guild)
     async def ip(self, ctx, *, ip):
+        """Get information regarding a specific IP address."""
         ip = re.search(type(self).ip_regex, ip)
         try:
             string = f'https://api.ipgeolocation.io/ipgeo?apiKey={self.bot.api["ip"]}&ip={ip.string}'
