@@ -74,13 +74,17 @@ class Fun(commands.Cog):
     @commands.cooldown(1, 1.5, commands.BucketType.guild)
     async def morse(self, ctx, *, text=''):
         """Convert text into morse code and vice versa."""
+        text = await type(self)._attachment_helper(ctx) or text
         operator = 'decode' if {'.', '-', ' '}.issuperset(text) else 'encode'
 
         async with self.bot.session.get(f'http://www.morsecode-api.de/{operator}?string={text}') as get:
             key = 'morsecode' if operator == 'encode' else 'plaintext'
             output = (await get.json()).get(key, None)
 
-        await self._haste_helper(ctx, output)
+        if len(output) <= 1:
+            await ctx.send(f'{ctx.author.mention}, Invalid morse code.')
+        else:
+            await self._haste_helper(ctx, output)
 
     @commands.command()
     @commands.cooldown(1, 1.5, commands.BucketType.guild)
