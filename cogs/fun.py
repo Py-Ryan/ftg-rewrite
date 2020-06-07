@@ -48,7 +48,7 @@ class Fun(commands.Cog):
 
         try:
             binary = insert_spaces(text.strip(), 8)
-            if all(re.match(type(self).binary_regex, b) for b in binary) and len(text) % 8:
+            if len(text) % 8 and all(re.match(type(self).binary_regex, b) for b in binary):
                 output = ''.join([chr(int(byte, 2)) for byte in binary]).replace('\n', ' ')
             else:
                 raise ValueError
