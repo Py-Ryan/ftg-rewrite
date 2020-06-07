@@ -47,13 +47,17 @@ A rewrote version of Ft.-Gunna
        
     0.4.4:
         - `binary` command now supports 8-bit binary input without spaces between bytes.
+        - `binary` command now supports text file input.
         - `binary` command double-checks bit length of inputted binary. If not 8, then input is converted to binary.
+        - slightly edited conversion logic inside `binary` command.
         - `fun` extension:
-            -> Added `ip` information command.            
+            -> Added `ip` information command.        
+            -> Added `hex` hexadecimal conversion command.    
+            -> Added `morse` morse code conversion command.
         - Fixed `Ftg.get_prefix` from erroring in DMs.
         - New extension `meta`:
             -> `prefix` command migrated here.
             -> `av` command for viewing enlarged user avatars.
             -> `info` command migrated here.
         - Changed cog names from `ext_nameCog` to `ext_name`
-        
+        - Added helper methods to `fun` to prevent redundant code in conversion commands.
