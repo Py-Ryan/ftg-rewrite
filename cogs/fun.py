@@ -17,12 +17,21 @@ class Fun(commands.Cog):
 
     @commands.command()
     @commands.cooldown(1, 1.5, commands.BucketType.guild)
-    async def binary(self, ctx, *, text):
-        """Convert text to binary or vise versa. Enter binary bytes separated by spaces to convert into ASCII."""
+    async def binary(self, ctx, *, text=""):
+        """Convert text to binary or vise versa."""
+
+        attachments = ctx.message.attachments
+        if attachments:
+            for attachment in attachments:
+                try:
+                    text += ''.join((await attachment.read()).decode('utf-8').replace(' ', '\n'))
+                except UnicodeDecodeError:
+                    return await ctx.send(f'{ctx.author.mention}, use text files.')
+
         try:
             binary = insert_spaces(text.strip(), 8)
             if all(re.match(type(self).binary_regex, b) for b in binary) and len(text) % 8:
-                output = ''.join([chr(int(byte, 2)) for byte in binary])
+                output = ''.join([chr(int(byte, 2)) for byte in binary]).replace('\n', ' ')
             else:
                 raise ValueError
         except ValueError:
