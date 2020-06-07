@@ -37,7 +37,7 @@ class Fun(commands.Cog):
         except ValueError:
             output = ' '.join([bin(ord(char))[2:].zfill(8) for char in text])
 
-        if len(output) >= 150:
+        if len(output) >= 200:
             async with self.bot.session.post('https://haste.crrapi.xyz/documents', data=output) as post:
                 url_code = (await post.json()).get('key', None)
                 if url_code:
@@ -64,7 +64,7 @@ class Fun(commands.Cog):
         except ValueError:
             output = ''.join([str(hex(ord(char)))[2:] for char in text])
 
-        if len(output) >= 150:
+        if len(output) >= 200:
             async with self.bot.session.post('https://haste.crrapi.xyz/documents', data=output) as post:
                 url_code = (await post.json()).get('key', None)
                 if url_code:
