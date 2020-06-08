@@ -1,8 +1,8 @@
+from typing import Union
 from random import randint
 from contextlib import suppress
 from humanize import naturaltime
 from discord.ext import commands
-from typing import Union, Optional
 from discord import User, Embed, Member, Status, Colour, HTTPException
 
 

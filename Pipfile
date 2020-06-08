@@ -13,6 +13,7 @@ discord-flags = "*"
 jishaku = "*"
 aiohttp = "*"
 humanize = "*"
+beautifulsoup4 = "*"
 
 [requires]
 python_version = "3.8"
