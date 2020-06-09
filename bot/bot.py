@@ -1,3 +1,4 @@
+import ssl
 import toml
 from discord import Game
 from os import listdir, path
@@ -46,8 +47,11 @@ class Ftg(commands.Bot):
                 yield path.splitext(cog)
 
     async def setup(self):
-        self.db = await create_pool(self._db_url, min_size=1, max_size=5)
-        self.session = ClientSession()
+        (self.db, self.session) = (await create_pool(
+            self._db_url,
+            min_size=1,
+            max_size=5,
+        ), ClientSession())
 
     def run(self):
         """Connects the bot to discord & mounts the cogs."""
