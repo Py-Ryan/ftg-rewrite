@@ -12,7 +12,7 @@ class Meta(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.command()
+    @commands.group(invoke_without_command=True)
     @commands.guild_only()
     @commands.cooldown(1, 1.5, commands.BucketType.guild)
     async def info(self, ctx, *, snwflk: Union[Member, int, str] = None):
@@ -112,6 +112,30 @@ class Meta(commands.Cog):
             await ctx.send(f"Changed the prefix for this guild. 👌")
         else:
             await ctx.send(f"Alright then. 👌")
+
+    @info.command(name='cog')
+    @commands.cooldown(1, 2, commands.BucketType.guild)
+    async def info_cog(self, ctx, *, cog='Fun'):
+        cog = cog.capitalize()
+        cogs = self.bot.cogs
+        info_cog = cogs.get(cog, None)
+
+        if info_cog:
+            info = (
+                Embed(
+                    title=cog,
+                    description=f'Information on the {cog.lower()} extension.',
+                    colour=randint(0, 0xffffff)
+                )
+                .add_field(name='**Command Count**', value=len(info_cog.get_commands()), inline=True)
+                .add_field(name='**Lines Of Code**', value=info_cog.loc, inline=True)
+                .set_thumbnail(url=str(self.bot.user.avatar_url_as(static_format='png')))
+                .set_footer(text=f'Extension loaded {naturaltime(info_cog._raw_uptime)}.')
+            )
+
+            await ctx.send(embed=info)
+        else:
+            await ctx.send(f'{ctx.author.mention}, no cogs named {cog}.')
 
 
 def setup(bot):
