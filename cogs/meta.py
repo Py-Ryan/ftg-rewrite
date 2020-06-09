@@ -15,7 +15,7 @@ class Meta(commands.Cog):
     @commands.command()
     @commands.guild_only()
     @commands.cooldown(1, 1.5, commands.BucketType.guild)
-    async def info(self, ctx, *, snwflk: Union[Member, int] = None):
+    async def info(self, ctx, *, snwflk: Union[Member, int, str] = None):
         if snwflk == 'me':
             snwflk = ctx.author
         else:
