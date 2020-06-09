@@ -1,6 +1,7 @@
 import re
 from random import randint
 from discord.ext import commands
+from collections import defaultdict
 from discord import Embed, AllowedMentions
 from textwrap import wrap as insert_spaces
 from string import ascii_letters as alphabet_
@@ -108,7 +109,7 @@ class Fun(commands.Cog):
         try:
             string = f'https://api.ipgeolocation.io/ipgeo?apiKey={self.bot.api["ip"]}&ip={ip.string}'
             async with self.bot.session.get(string) as g:
-                info = await g.json()
+                info = await g.json() or defaultdict(lambda: 'None')
 
             embed = (
                 Embed(title=ip.string, colour=randint(0, 0xffffff))
