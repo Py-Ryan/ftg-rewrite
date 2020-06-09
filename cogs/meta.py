@@ -16,11 +16,14 @@ class Meta(commands.Cog):
     @commands.guild_only()
     @commands.cooldown(1, 1.5, commands.BucketType.guild)
     async def info(self, ctx, *, snwflk: Union[Member, int] = None):
-        try:
-            user_id = getattr(snwflk, 'id', snwflk)
-            snwflk = ctx.guild.get_member(user_id) or await self.bot.fetch_user(user_id)
-        except HTTPException:
-            snwflk = ctx.guild.get_member(self.bot.user.id)
+        if snwflk == 'me':
+            snwflk = ctx.author
+        else:
+            try:
+                user_id = getattr(snwflk, 'id', snwflk)
+                snwflk = ctx.guild.get_member(user_id) or await self.bot.fetch_user(user_id)
+            except HTTPException:
+                snwflk = ctx.guild.get_member(self.bot.user.id)
 
         cases = {
             Status.online: Colour.green(),
