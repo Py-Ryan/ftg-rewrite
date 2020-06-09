@@ -1,4 +1,5 @@
 import toml
+import asyncio
 from discord import Game
 from os import listdir, path
 from collections import deque
@@ -124,6 +125,8 @@ ftg = Ftg(
     **config,
     extensions=listdir('../cogs'),
     command_prefix=get_prefix,
-    activity=Game('default prefix is mention')
+    activity=Game('default prefix is a mention')
 )
-ftg.run()
+
+if __name__ == '__main__':
+    ftg.run()
