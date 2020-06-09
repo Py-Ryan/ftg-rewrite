@@ -2,7 +2,7 @@
 A rewrote version of Ft.-Gunna
 
 # version:
-0.4.4
+0.5.0-beta
 
 # updates:
     0.1.0:
@@ -62,10 +62,11 @@ A rewrote version of Ft.-Gunna
         - Changed cog names from `ext_nameCog` to `ext_name`
         - Added helper methods to `fun` to prevent redundant code in conversion commands.
         
-    0.5.0:
+    0.5.0-beta:
         - If `me` is the only argument to the `info` command, the author is specified.
         - Changed how cogs automatically get assigned a _raw_uptime attribute
         - Removed override for `add_cog` due to above ^
         - Added db as an automatically assigned attribute to each cog.
         - Added cog info command to `meta` invoked with `<prefix> info cog <cog_name>`
         - Implmented custom context with a reply method to emulate d.js `user.reply`.
+        - Fix semver minor versions
