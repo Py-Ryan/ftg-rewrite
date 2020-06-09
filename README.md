@@ -74,3 +74,4 @@ A rewrote version of Ft.-Gunna
     0.5.1:
         - Reinforced reliability of commands that interact with external APIs.
         - General code consistancy improvments. See commit messages for more details
+        - Reformatted `bot.uptime` and fixed `bot._raw_uptime` from being an obviously incorrect time.
