@@ -8,7 +8,7 @@ A rewrote version of Ft.-Gunna
     0.1.0:
         Barebones version.
         
-    0.2.1:
+    0.2.0:
         - Dynamic prefixing.
         - Built-in aiohttp.ClientSession() since aiohttp suggests this.
         - Implemented Jishaku.
@@ -22,7 +22,7 @@ A rewrote version of Ft.-Gunna
             -> Features commands relating to guild & user configuration.
             -> Added a change prefix command.
             
-    0.3.2:
+    0.3.0:
         - Added a new extension `fun`
             -> Added `binary` command for binary conversions.
                 -> Normal input will be converted to binary.
@@ -39,13 +39,13 @@ A rewrote version of Ft.-Gunna
         - Add a debug error handler in `bot.py`. This is not production.
         - Updated to discord.py-1.4.0a.
         
-    0.3.3:
+    0.3.1:
         - Fixed `binary` command breaking with long inputs.
         - Edited `binary` command minimum length for a hastebin post to 150 rather than 100.
         - Added an additional check to `binary` to allow users to convert numbers into binary.
         - Change `caesar` back to a command rather than a group.
        
-    0.4.4:
+    0.4.0:
         - `binary` command now supports 8-bit binary input without spaces between bytes.
         - `binary` command now supports text file input.
         - `binary` command double-checks bit length of inputted binary. If not 8, then input is converted to binary.
@@ -61,3 +61,11 @@ A rewrote version of Ft.-Gunna
             -> `info` command migrated here.
         - Changed cog names from `ext_nameCog` to `ext_name`
         - Added helper methods to `fun` to prevent redundant code in conversion commands.
+        
+    0.5.0:
+        - If `me` is the only argument to the `info` command, the author is specified.
+        - Changed how cogs automatically get assigned a _raw_uptime attribute
+        - Removed override for `add_cog` due to above ^
+        - Added db as an automatically assigned attribute to each cog.
+        - Added cog info command to `meta` invoked with `<prefix> info cog <cog_name>`
+        - Implmented custom context with a reply method to emulate d.js `user.reply`.
