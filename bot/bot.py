@@ -75,9 +75,11 @@ class Ftg(commands.Bot):
             (guild_id, prefix) = row['row']
             self.cache[str(guild_id)] = {'prefix': prefix, 'messages': {'deleted': deque(), 'edited': deque()}}
 
-        for cog in self.cogs.values():
-            cog.__dict__['_raw_uptime'] = datetime.now()
-            cog.__dict__['db'] = self.db
+        for (name, obj) in self.cogs.items():
+            with open(f'../cogs/{name}.py', encoding='utf8') as extension:
+                obj.loc = len(extension.readlines())
+                obj.db = self.db
+                obj._raw_uptime = datetime.now()
 
         self.load_extension("jishaku")
         super().run(self._token)
