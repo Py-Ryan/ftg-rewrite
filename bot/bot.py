@@ -5,6 +5,7 @@ from collections import deque
 from datetime import datetime
 from asyncpg import create_pool
 from discord.ext import commands
+from humanize import naturaldelta
 from aiohttp import ClientSession
 
 with open('config.toml', 'r') as file:
@@ -33,7 +34,7 @@ class Ftg(commands.Bot):
         self.api = {'ip': kwargs.pop('ip_key', None)}
         self._db_url = kwargs.pop('db_url', None)
         self._token = kwargs.pop('token', None)
-        self._raw_uptime = datetime.utcnow()
+        self._raw_uptime = datetime.now()
         self.session = None
         self.cache = {}
         self.db = None
@@ -41,7 +42,7 @@ class Ftg(commands.Bot):
     @property
     def uptime(self):
         """Formatted bot uptime."""
-        return self._raw_uptime.strftime('%H:%M:%S') if self._raw_uptime else None
+        return naturaldelta(self._raw_uptime) if self._raw_uptime else None
 
     @property
     def extensions(self):
