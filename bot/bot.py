@@ -8,12 +8,21 @@ from asyncpg import create_pool
 from discord.ext import commands
 from aiohttp import ClientSession
 
-
 with open('config.toml', 'r') as file:
     config = toml.load(file).get('credentials', None)
 
     if not {'token', 'db_url'} <= set(config):
         raise ValueError("TOML config file missing `token` and/or `db_url` keys.")
+
+
+class Context(commands.Context):
+
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+
+    async def reply(self, content, **kwargs):
+        """Kinda like discord.js user.reply."""
+        return await self.send(f'{self.author.mention}, {content}', **kwargs)
 
 
 class Ftg(commands.Bot):
@@ -87,6 +96,11 @@ class Ftg(commands.Bot):
     async def on_ready(self):
         if self._raw_uptime <= datetime.utcnow():
             print(f'{self.user} is ready.')
+
+    async def on_message(self, message):
+        if self.is_ready():
+            context = await self.get_context(message, cls=Context)
+            await self.invoke(context)
 
     async def on_command_error(self, context, exception):
         exception = getattr(exception, 'original', exception)
