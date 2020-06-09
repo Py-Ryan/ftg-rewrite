@@ -23,7 +23,7 @@ class Fun(commands.Cog):
                 if url_code:
                     await ctx.reply(f'https://haste.crrapi.xyz/raw/{url_code}')
         else:
-            await ctx.reply(output, allowed_mentions=AllowedMentions(everyone=False, roles=False))
+            await ctx.reply(output, allowed_mentions=AllowedMentions(everyone=False, roles=False, users=False))
 
     @staticmethod
     async def _attachment_helper(ctx):
