@@ -73,3 +73,4 @@ A rewrote version of Ft.-Gunna
         
     0.5.1:
         - Reinforced reliability of commands that interact with external APIs.
+        - General code consistancy improvments. See commit messages for more details

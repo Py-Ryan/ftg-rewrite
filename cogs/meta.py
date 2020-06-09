@@ -116,8 +116,8 @@ class Meta(commands.Cog):
     @info.command(name='cog')
     @commands.cooldown(1, 2, commands.BucketType.guild)
     async def info_cog(self, ctx, *, cog='Fun'):
-        cog = cog.capitalize()
         cogs = self.bot.cogs
+        cog = cog.capitalize()
         info_cog = cogs.get(cog, None)
 
         if info_cog:
