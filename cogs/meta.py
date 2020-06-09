@@ -97,7 +97,7 @@ class Meta(commands.Cog):
             )
 
         if str(reaction) == '\U00002705':
-            await self.bot.db.execute(
+            await self.db.execute(
                 """
                 INSERT INTO guilds (id, prefix)
                 VALUES ($1, $2)
