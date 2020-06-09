@@ -109,9 +109,9 @@ class Meta(commands.Cog):
                 prefix
             )
             self.bot.cache[str(ctx.guild.id)]['prefix'] = prefix
-            await ctx.send(f'Changed the prefix for this guild. 👌')
+            await ctx.reply('changed the prefix for this guild. 👌')
         else:
-            await ctx.send(f'Alright then. 👌')
+            await ctx.send('Alright then. 👌')
 
     @info.command(name='cog')
     @commands.cooldown(1, 2, commands.BucketType.guild)
