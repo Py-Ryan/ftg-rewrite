@@ -1,4 +1,3 @@
-import ssl
 import toml
 from discord import Game
 from os import listdir, path
