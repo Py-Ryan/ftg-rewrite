@@ -97,7 +97,7 @@ class Fun(commands.Cog):
     async def catfact(self, ctx):
         """Random cat facts. UwU."""
         async with self.bot.session.get('https://catfact.ninja/fact?max_length=100') as g:
-            embed = Embed(description=(await g.json())['fact'], colour=randint(0, 0xffffff))
+            embed = Embed(description=(await g.json()).get('fact', None), colour=randint(0, 0xffffff))
             await ctx.send(embed=embed)
 
     @commands.command()
