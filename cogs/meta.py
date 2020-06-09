@@ -69,7 +69,7 @@ class Meta(commands.Cog):
             if not isinstance(user, User):
                 user = self.bot.get_user(user_id) or self.bot.fetch_user(user_id)
         except HTTPException:
-            await ctx.send("Couldn't find a discord user with that ID.")
+            await ctx.reply("couldn't find a user with that identification.")
         else:
             avatar = str(user.avatar_url_as(static_format='png'))
             embed = (
@@ -84,7 +84,7 @@ class Meta(commands.Cog):
     @commands.cooldown(1, 1.5, commands.BucketType.guild)
     async def prefix(self, ctx, prefix):
         """Edit the prefix for the current guild."""
-        message = await ctx.send(f"{ctx.author.mention}, change the guild prefix to `{prefix}`?")
+        message = await ctx.reply(f'change the guild prefix to `{prefix}`?')
 
         for reaction in ('✅', '❌'):
             await message.add_reaction(reaction)
@@ -108,10 +108,10 @@ class Meta(commands.Cog):
                 ctx.guild.id,
                 prefix
             )
-            self.bot.cache[str(ctx.guild.id)]["prefix"] = prefix
-            await ctx.send(f"Changed the prefix for this guild. 👌")
+            self.bot.cache[str(ctx.guild.id)]['prefix'] = prefix
+            await ctx.send(f'Changed the prefix for this guild. 👌')
         else:
-            await ctx.send(f"Alright then. 👌")
+            await ctx.send(f'Alright then. 👌')
 
     @info.command(name='cog')
     @commands.cooldown(1, 2, commands.BucketType.guild)
@@ -135,7 +135,7 @@ class Meta(commands.Cog):
 
             await ctx.send(embed=info)
         else:
-            await ctx.send(f'{ctx.author.mention}, no cogs named {cog}.')
+            await ctx.reply(f'no cogs named {cog}.')
 
 
 def setup(bot):
