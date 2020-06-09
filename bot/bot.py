@@ -75,12 +75,12 @@ class Ftg(commands.Bot):
             (guild_id, prefix) = row['row']
             self.cache[str(guild_id)] = {'prefix': prefix, 'messages': {'deleted': deque(), 'edited': deque()}}
 
+        for cog in self.cogs.values():
+            cog.__dict__['_raw_uptime'] = datetime.now()
+            cog.__dict__['db'] = self.db
+
         self.load_extension("jishaku")
         super().run(self._token)
-
-    def add_cog(self, cog):
-        cog.__dict__.setdefault('_raw_uptime', datetime.utcnow())
-        super().add_cog(cog)
 
     async def on_ready(self):
         if self._raw_uptime <= datetime.utcnow():
