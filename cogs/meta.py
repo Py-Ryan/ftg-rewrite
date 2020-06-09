@@ -53,8 +53,8 @@ class Meta(commands.Cog):
                 embed.remove_field(i)
 
         if snwflk is ctx.guild.me:
-            async with self.bot.session.get(
-                    "https://raw.githubusercontent.com/Py-Ryan/ftg-rewrite/master/README.md") as get:
+            github = "https://raw.githubusercontent.com/Py-Ryan/ftg-rewrite/master/README.md"
+            async with self.bot.session.get(github) as get:
                 version = (await get.text()).split("\n")[4]
 
             embed.set_footer(text=f'Developer: well in that case#0082 (700091773695033505) | Version: {version}')
