@@ -70,3 +70,6 @@ A rewrote version of Ft.-Gunna
         - Added cog info command to `meta` invoked with `<prefix> info cog <cog_name>`
         - Implmented custom context with a reply method to emulate d.js `user.reply`.
         - Fix semver minor versions
+        
+    0.5.1:
+        - Reinforced reliability of commands that interact with external APIs.
