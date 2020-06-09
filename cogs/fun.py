@@ -21,10 +21,9 @@ class Fun(commands.Cog):
             async with self.bot.session.post('https://haste.crrapi.xyz/documents', data=output) as post:
                 url_code = (await post.json()).get('key', None)
                 if url_code:
-                    await ctx.send(f'{ctx.author.mention}, https://haste.crrapi.xyz/raw/{url_code}')
+                    await ctx.reply(f'https://haste.crrapi.xyz/raw/{url_code}')
         else:
-            await ctx.send(f'{ctx.author.mention}, {output}',
-                           allowed_mentions=AllowedMentions(everyone=False, roles=False))
+            await ctx.reply(output, allowed_mentions=AllowedMentions(everyone=False, roles=False))
 
     @staticmethod
     async def _attachment_helper(ctx):
@@ -36,7 +35,7 @@ class Fun(commands.Cog):
                 try:
                     output += ''.join((await attachment.read()).decode('utf-8').replace(' ', '\n'))
                 except UnicodeDecodeError:
-                    return await ctx.send(f'{ctx.author.mention}, use text files.')
+                    return await ctx.reply('use text files.')
 
         return output
 
@@ -82,7 +81,7 @@ class Fun(commands.Cog):
             output = (await get.json()).get(key, None)
 
         if len(output) <= 1:
-            await ctx.send(f'{ctx.author.mention}, Invalid morse code.')
+            await ctx.reply('invalid morse code.')
         else:
             await self._haste_helper(ctx, output)
 
@@ -91,7 +90,7 @@ class Fun(commands.Cog):
     async def caesar(self, ctx, *, text):
         """Convert plain text into a caesar cipher. Default shift factor is 4."""
         table = str.maketrans(alphabet_, alphabet_[4:] + alphabet_[:4])
-        await ctx.send(f'{ctx.author.mention}, {text.translate(table)}')
+        await ctx.reply(text.translate(table))
 
     @commands.command()
     @commands.cooldown(1, 0.75, commands.BucketType.guild)
@@ -126,7 +125,7 @@ class Fun(commands.Cog):
 
             await ctx.send(embed=embed)
         except (AttributeError, KeyError):
-            await ctx.send(f'{ctx.author.mention}, Invalid IP.')
+            await ctx.reply('invalid ip.')
 
 
 def setup(bot):
