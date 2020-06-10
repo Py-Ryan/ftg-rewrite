@@ -107,27 +107,25 @@ class Fun(commands.Cog):
     async def ip(self, ctx, *, ip):
         """Get information regarding a specific IP address."""
         ip = re.search(type(self).ip_regex, ip)
-        try:
-            string = f'https://api.ipgeolocation.io/ipgeo?apiKey={self.bot.api["ip"]}&ip={ip.string}'
-            async with self.bot.session.get(string) as g:
-                info = await g.json() or defaultdict(lambda: 'None')
+        string = f'https://api.ipgeolocation.io/ipgeo?apiKey={self.bot.ip_key}&ip={ip.string}'
 
-            embed = (
-                Embed(title=ip.string, colour=randint(0, 0xffffff))
-                .add_field(name='**Continent:**', value=info['continent_name'], inline=True)
-                .add_field(name='**Country:**', value=info['country_name'], inline=True)
-                .add_field(name='**State/Province:**', value=info['state_prov'], inline=False)
-                .add_field(name='**City:**', value=info['city'], inline=True)
-                .add_field(name='**Zip:**', value=info['zipcode'], inline=False)
-                .set_footer(
-                    text=f'Calling Code: {info["calling_code"]} | Lat: {info["latitude"]} | Long: {info["longitude"]}'
-                )
-                .set_thumbnail(url=info['country_flag'])
+        async with self.bot.session.get(string) as g:
+            info = await g.json() or defaultdict(lambda: 'None')
+
+        embed = (
+            Embed(title=ip.string, colour=randint(0, 0xffffff))
+            .add_field(name='**Continent:**', value=info['continent_name'], inline=True)
+            .add_field(name='**Country:**', value=info['country_name'], inline=True)
+            .add_field(name='**State/Province:**', value=info['state_prov'], inline=False)
+            .add_field(name='**City:**', value=info['city'], inline=True)
+            .add_field(name='**Zip:**', value=info['zipcode'], inline=False)
+            .set_footer(
+                text=f'Calling Code: {info["calling_code"]} | Lat: {info["latitude"]} | Long: {info["longitude"]}'
             )
+            .set_thumbnail(url=info['country_flag'])
+        )
 
-            await ctx.send(embed=embed)
-        except (AttributeError, KeyError):
-            await ctx.reply('invalid ip.')
+        await ctx.send(embed=embed)
 
 
 def setup(bot):
