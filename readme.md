@@ -91,3 +91,4 @@ A rewrote version of Ft.-Gunna
     0.5.3:
         - Fix info command from failing on a github 404 error.
         - Fix ip command. Wasen't migrated to new config.
+        - Add new invalid ip check for the ip command.
