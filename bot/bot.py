@@ -1,6 +1,6 @@
 import toml
 
-from os import listdir
+from os import listdir, getcwd
 from discord import Game
 from datetime import datetime
 from asyncpg import create_pool
@@ -9,7 +9,7 @@ from humanize import naturaldelta
 from aiohttp import ClientSession
 
 
-with open('config.toml', 'r') as file:
+with open('bot/config.toml', 'r') as file:
     config = toml.load(file).get('credentials', None)
 
     if not {'token', 'db_url'} <= set(config):
@@ -73,7 +73,7 @@ class Ftg(commands.Bot):
             self.cache[str(guild_id)] = {'prefix': prefix}
 
         for (name, obj) in self.cogs.items():
-            with open(f'../cogs/{name}.py', encoding='utf8') as extension:
+            with open(f'./cogs/{name.lower()}.py', encoding='utf8') as extension:
                 obj.loc = len(extension.readlines())
                 obj.db = self.db
                 obj._raw_uptime = datetime.now()
@@ -107,7 +107,7 @@ def get_prefix(bot, message):
 
 ftg = Ftg(
     **config,
-    modules=listdir('../cogs'),
+    modules=listdir('./cogs'),
     command_prefix=get_prefix,
     activity=Game('default prefix is a mention')
 )

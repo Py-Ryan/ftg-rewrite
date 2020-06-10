@@ -1,8 +1,8 @@
-from typing import Union
 from random import randint
 from contextlib import suppress
 from humanize import naturaltime
 from discord.ext import commands
+from typing import Union, Optional
 from discord import User, Embed, Member, Status, Colour, HTTPException
 
 
@@ -96,7 +96,7 @@ class Meta(commands.Cog):
                 timeout=15
             )
 
-        if str(reaction) == '\U00002705':
+        if str(reaction) == '✅':
             await self.db.execute(
                 """
                 INSERT INTO guilds (id, prefix)
