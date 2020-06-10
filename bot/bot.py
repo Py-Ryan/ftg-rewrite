@@ -95,7 +95,7 @@ class Ftg(commands.Bot):
     async def on_command_error(self, context, exception):
         exception = getattr(exception, 'original', exception)
 
-        if not isinstance(exception, (commands.CommandNotFound)):
+        if not isinstance(exception, (commands.CommandNotFound, commands.CommandOnCooldown)):
             tb = '\n'.join(format_exception(etype=type(exception), value=exception, tb=exception.__traceback__))
 
             async with self.session.post('https://haste.crrapi.xyz/documents', data=tb) as post:
