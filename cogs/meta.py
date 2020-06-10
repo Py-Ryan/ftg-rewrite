@@ -53,7 +53,7 @@ class Meta(commands.Cog):
                 embed.remove_field(i)
 
         if snwflk is ctx.guild.me:
-            github = "https://raw.githubusercontent.com/Py-Ryan/ftg-rewrite/master/README.md"
+            github = "https://raw.githubusercontent.com/Py-Ryan/ftg-rewrite/master/readme.md"
             async with self.bot.session.get(github) as get:
                 version = (await get.text()).split("\n")[4]
 
