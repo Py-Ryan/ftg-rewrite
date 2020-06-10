@@ -2,7 +2,7 @@
 A rewrote version of Ft.-Gunna
 
 # version:
-0.5.0
+0.5.1
 
 # updates:
     0.1.0:
@@ -75,3 +75,10 @@ A rewrote version of Ft.-Gunna
         - Reinforced reliability of commands that interact with external APIs.
         - General code consistancy improvments. See commit messages for more details
         - Reformatted `bot.uptime` and fixed `bot._raw_uptime` from being an obviously incorrect time.
+        - Reworked arguments passed to the bot constructor.
+            - They're now set as attributes for `Ftg` by their name.
+        - Removed `Ftg.extensions` property. Useless & shadowing.
+        - Small rework to how extensions are loaded initally.
+        - Removed `messages` entry from cache entries. Been unused for too long.
+        - `ftg.run` won't run if `bot.py` is imported anymore.
+        - Renamed `ftg.extensions` to `ftg.modules` for the raw file names passed to the ftg constructor.
