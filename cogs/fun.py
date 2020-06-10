@@ -17,9 +17,9 @@ class Fun(commands.Cog):
     binary_regex = re.compile(r'^[0-1]{8}$')
     ip_regex = re.compile(r'\b(?:[0-9]{1,3}\.){3}[0-9]{1,3}\b')
 
-    async def _haste_helper(self, ctx, output):
+    async def _haste_helper(self, ctx, output, limit=200):
         """Helper function that posts long outputs of conversion commands to a haste server."""
-        if len(output) >= 200:
+        if len(output) >= (int(limit) or 200):
             async with self.bot.session.post('https://haste.crrapi.xyz/documents', data=output) as post:
                 url_code = (await post.json()).get('key', None)
                 if url_code:

@@ -97,3 +97,4 @@ A rewrote version of Ft.-Gunna
        - Small edit to info command that adds an uptime field for bot info.
        - Doubled cooldown for the prefix command.
        - _haste_helper helper method now allows the author as an allowed mention.
+       - Added limit keyword argument to the _haste_helper method. Serves as the limit between actions.
