@@ -86,4 +86,4 @@ A rewrote version of Ft.-Gunna
     0.5.2:
         - Move away from pipenv.
         - Small refactor to file structure. Use `py -m bot.bot` to run now.
-        
+        - Small upgrade to command error handler.
