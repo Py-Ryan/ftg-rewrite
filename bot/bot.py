@@ -1,12 +1,14 @@
 import toml
 
-from os import listdir, getcwd
-from discord import Game
+from os import listdir
+from random import randint
 from datetime import datetime
 from asyncpg import create_pool
+from discord import Game, Embed
 from discord.ext import commands
 from humanize import naturaldelta
 from aiohttp import ClientSession
+from traceback import format_exception
 
 
 with open('bot/config.toml', 'r') as file:
@@ -93,9 +95,27 @@ class Ftg(commands.Bot):
     async def on_command_error(self, context, exception):
         exception = getattr(exception, 'original', exception)
 
-        if not isinstance(exception, (commands.CommandOnCooldown, commands.CommandNotFound)):
-            raise exception
+        if not isinstance(exception, (commands.CommandNotFound)):
+            tb = '\n'.join(format_exception(etype=type(exception), value=exception, tb=exception.__traceback__))
 
+            async with self.session.post('https://haste.crrapi.xyz/documents', data=tb) as post:
+                key = (await post.json()).get('key', None)
+                tb = f'https://haste.crrapi.xyz/{key}' if key else None
+
+            embed = (
+                Embed(
+                    title='Unhandled Exception \❌',
+                    colour=randint(0, 0xffffff),
+                    description=f'[Traceback]({tb})\n```{exception}```' if tb else '```Unknown traceback.```'
+                )
+                .add_field(name='**Command**', value=context.command.qualified_name, inline=True)
+                .add_field(name='**Author**', value=context.author.id, inline=True)
+                .set_thumbnail(url=str(self.user.avatar_url_as(static_format='png')))
+            )
+
+            await context.message.add_reaction('❌')
+            await self.get_channel(self.debug_channel_id).send(embed=embed)
+            await context.send("There's been an unexpected error. A report has been generated. Will soon be fixed :-)")
 
 def get_prefix(bot, message):
     if message.guild is not None:
