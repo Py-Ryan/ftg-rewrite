@@ -2,7 +2,7 @@
 A rewrote version of Ft.-Gunna
 
 # version:
-0.5.1
+0.5.2
 
 # updates:
     0.1.0:
