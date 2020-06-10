@@ -23,9 +23,9 @@ class Fun(commands.Cog):
             async with self.bot.session.post('https://haste.crrapi.xyz/documents', data=output) as post:
                 url_code = (await post.json()).get('key', None)
                 if url_code:
-                    await ctx.reply(f'https://haste.crrapi.xyz/raw/{url_code}')
-        else:
-            await ctx.reply(output, allowed_mentions=AllowedMentions(everyone=False, roles=False, users=False))
+                    return await ctx.reply(f'https://haste.crrapi.xyz/raw/{url_code}')
+
+        await ctx.reply(output, allowed_mentions=AllowedMentions(everyone=False, roles=False, users=[ctx.author]))
 
     @staticmethod
     async def _attachment_helper(ctx):

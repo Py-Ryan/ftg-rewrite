@@ -2,7 +2,7 @@
 A rewrote version of Ft.-Gunna
 
 # version:
-0.5.3
+0.5.4
 
 # updates:
     0.1.0:
@@ -89,10 +89,11 @@ A rewrote version of Ft.-Gunna
         - Small upgrade to command error handler.
 
     0.5.3:
-        - Fix info command from failing on a github 404 error.
+        - Fix info command from failing on a GitHub 404 error.
         - Fix IP command. Was not migrated to new config.
         - Add new invalid IP check for the IP command.
 
     0.5.4:
        - Small edit to info command that adds an uptime field for bot info.
        - Doubled cooldown for the prefix command.
+       - 
