@@ -84,11 +84,15 @@ A rewrote version of Ft.-Gunna
         - Renamed `ftg.extensions` to `ftg.modules` for the raw file names passed to the ftg constructor.
 
     0.5.2:
-        - Move away from pipenv.
+        - Move away from PipeEnv.
         - Small refactor to file structure. Use `py -m bot.bot` to run now.
         - Small upgrade to command error handler.
 
     0.5.3:
         - Fix info command from failing on a github 404 error.
-        - Fix ip command. Wasen't migrated to new config.
-        - Add new invalid ip check for the ip command.
+        - Fix IP command. Was not migrated to new config.
+        - Add new invalid IP check for the IP command.
+
+    0.5.4:
+       - Small edit to info command that adds an uptime field for bot info.
+       - Doubled cooldown for the prefix command.

@@ -57,6 +57,7 @@ class Meta(commands.Cog):
             async with self.bot.session.get(github) as get:
                 version = (await get.text()).split("\n")[4]
 
+            embed.add_field(name='**Uptime**', value=self.bot.uptime, inline=False)
             embed.set_footer(text=f'Developer: well in that case#0082 (700091773695033505) | Version: {version}')
 
         await ctx.send(embed=embed)
@@ -81,7 +82,7 @@ class Meta(commands.Cog):
 
     @commands.command()
     @commands.has_permissions(administrator=True)
-    @commands.cooldown(1, 1.5, commands.BucketType.guild)
+    @commands.cooldown(1, 3, commands.BucketType.guild)
     async def prefix(self, ctx, prefix):
         """Edit the prefix for the current guild."""
         message = await ctx.reply(f'change the guild prefix to `{prefix}`?')
