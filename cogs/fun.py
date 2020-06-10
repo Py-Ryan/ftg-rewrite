@@ -107,6 +107,10 @@ class Fun(commands.Cog):
     async def ip(self, ctx, *, ip):
         """Get information regarding a specific IP address."""
         ip = re.search(type(self).ip_regex, ip)
+
+        if not ip:
+            return await ctx.reply('invalid ip.')
+
         string = f'https://api.ipgeolocation.io/ipgeo?apiKey={self.bot.ip_key}&ip={ip.string}'
 
         async with self.bot.session.get(string) as g:
