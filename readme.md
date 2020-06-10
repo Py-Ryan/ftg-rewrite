@@ -96,4 +96,4 @@ A rewrote version of Ft.-Gunna
     0.5.4:
        - Small edit to info command that adds an uptime field for bot info.
        - Doubled cooldown for the prefix command.
-       - 
+       - _haste_helper helper method now allows the author as an allowed mention.
