@@ -105,3 +105,6 @@ A rewrote version of Ft.-Gunna
       - Version is no longer fetched each call to info. It's set at bot `start`.
       - Consistency & readability improvements.
       - Edited user conversion logic in some commands. Lot more readable.
+
+   0.5.6:
+      - Added latency field for bot info.
