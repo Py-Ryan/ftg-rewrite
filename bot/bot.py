@@ -29,7 +29,7 @@ class Context(commands.Context):
 
 
 class Ftg(commands.Bot):
-    __slots__ = ("db_url", "token", "_raw_uptime", "db", "cache", "session")
+    __slots__ = ('db_url', 'token', '_raw_uptime', 'db', 'cache', 'session')
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
@@ -51,6 +51,9 @@ class Ftg(commands.Bot):
             min_size=1,
             max_size=5,
         ), ClientSession())
+
+        async with self.session.get('https://raw.githubusercontent.com/Py-Ryan/ftg-rewrite/master/readme.md') as get:
+            self.__version__ = (await get.text()).split("\n")[4]
 
     def run(self):
         """Connects the bot to discord & mounts the cogs."""
