@@ -53,10 +53,7 @@ class Meta(commands.Cog):
                 embed.remove_field(i)
 
         if snwflk is ctx.guild.me:
-            github = "https://raw.githubusercontent.com/Py-Ryan/ftg-rewrite/master/readme.md"
-            async with self.bot.session.get(github) as get:
-                version = (await get.text()).split("\n")[4]
-
+            version = self.bot.__version__
             embed.add_field(name='**Uptime**', value=self.bot.uptime, inline=False)
             embed.set_footer(text=f'Developer: well in that case#0082 (700091773695033505) | Version: {version}')
 
@@ -64,21 +61,22 @@ class Meta(commands.Cog):
 
     @commands.command(aliases=['avatar', 'pfp'])
     @commands.cooldown(1, 1.5, commands.BucketType.guild)
-    async def av(self, ctx, *, user: Union[User, int]):
-        try:
-            user_id = getattr(user, 'id', user)
-            if not isinstance(user, User):
-                user = self.bot.get_user(user_id) or self.bot.fetch_user(user_id)
-        except HTTPException:
-            await ctx.reply("couldn't find a user with that identification.")
+    async def av(self, ctx, *, user: Union[User, int, str] = None):
+        if user == 'me' or not user:
+            user = ctx.author
         else:
-            avatar = str(user.avatar_url_as(static_format='png'))
-            embed = (
-                Embed(title=f'{user}\'s avatar:', colour=randint(0, 0xffffff), url=avatar)
-                .set_image(url=avatar)
-            )
+            if not isinstance(user, User):
+                try:
+                    user = await self.bot.fetch_user(user)
+                except HTTPException:
+                    user = ctx.author
 
-            await ctx.send(embed=embed)
+        avatar = str(user.avatar_url_as(static_format='png'))
+
+        embed = Embed(title=f"{user}'s avatar:", url=avatar)
+        embed.set_image(url=avatar)
+
+        await ctx.send(embed=embed)
 
     @commands.command()
     @commands.has_permissions(administrator=True)
@@ -117,9 +115,8 @@ class Meta(commands.Cog):
     @info.command(name='cog')
     @commands.cooldown(1, 2, commands.BucketType.guild)
     async def info_cog(self, ctx, *, cog='Fun'):
-        cogs = self.bot.cogs
         cog = cog.capitalize()
-        info_cog = cogs.get(cog, None)
+        info_cog = self.bot.cogs.get(cog, None)
 
         if info_cog:
             info = (
