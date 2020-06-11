@@ -98,3 +98,5 @@ A rewrote version of Ft.-Gunna
        - Doubled cooldown for the prefix command.
        - _haste_helper helper method now allows the author as an allowed mention.
        - Added limit keyword argument to the _haste_helper method. Serves as the limit between actions.
+       - More readable conversion logic inside the info command.
+       - try/except in get_prefix is more semantically fit than if/else.

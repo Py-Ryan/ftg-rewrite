@@ -19,11 +19,11 @@ class Meta(commands.Cog):
         if snwflk == 'me':
             snwflk = ctx.author
         else:
-            try:
-                user_id = getattr(snwflk, 'id', snwflk)
-                snwflk = ctx.guild.get_member(user_id) or await self.bot.fetch_user(user_id)
-            except HTTPException:
-                snwflk = ctx.guild.get_member(self.bot.user.id)
+            if not isinstance(snwflk, Member):
+                try:
+                    snwflk = await self.bot.fetch_user(snwflk)
+                except HTTPException:
+                    snwflk = ctx.guild.me
 
         cases = {
             Status.online: Colour.green(),

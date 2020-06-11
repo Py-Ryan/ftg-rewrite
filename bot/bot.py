@@ -118,10 +118,10 @@ class Ftg(commands.Bot):
             await context.send("There's been an unexpected error. A report has been generated. Will soon be fixed :-)")
 
 def get_prefix(bot, message):
-    if message.guild is not None:
+    try:
         guild = bot.cache.setdefault(str(message.guild.id), {'prefix': 'gn '})
         return commands.when_mentioned_or(guild["prefix"])(bot, message)
-    else:
+    except AttributeError:
         return commands.when_mentioned_or('gn ')(bot, message)
 
 
