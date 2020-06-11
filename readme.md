@@ -2,7 +2,7 @@
 A rewrote version of Ft.-Gunna
 
 # version:
-0.5.4
+0.5.5
 
 # updates:
     0.1.0:
@@ -100,3 +100,8 @@ A rewrote version of Ft.-Gunna
        - Added limit keyword argument to the _haste_helper method. Serves as the limit between actions.
        - More readable conversion logic inside the info command.
        - try/except in get_prefix is more semantically fit than if/else.
+
+   0.5.5:
+      - Version is no longer fetched each call to info. It's set at bot `start`.
+      - Consistency & readability improvements.
+      - Edited user conversion logic in some commands. Lot more readable.
