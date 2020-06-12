@@ -1,6 +1,7 @@
 import re
 
 from random import randint
+from typing import Optional
 from discord.ext import commands
 from humanize import naturaldelta
 from collections import defaultdict
@@ -134,18 +135,22 @@ class Fun(commands.Cog):
 
     @commands.command()
     @commands.cooldown(1, 1.5, commands.BucketType.guild)
-    async def snipe(self, ctx):
-        guild_has_snipes = self.bot.cache[str(ctx.guild.id)].get('messages', None)
-
-        if guild_has_snipes:
-            latest_snipe = guild_has_snipes['deleted'][0]
+    async def snipe(self, ctx, edited: Optional[int]):
+        """Snipe a deleted message. Use `<prefix>snipe 1` to snipe edited messages."""
+        try:
+            snipes = self.bot.cache[str(ctx.guild.id)]['messages']
+            latest_snipe = snipes['edited' if edited == 1 else 'deleted'][0]
             author = ctx.guild.get_member(latest_snipe.author) or await self.bot.fetch_user(latest_snipe.author)
 
             embed = Embed(
                 title=f'In #{latest_snipe.channel} | Around {naturaldelta(latest_snipe.when)} ago.',
-                colour=randint(0, 0xffffff),
-                description=f'```diff\n- {latest_snipe.content}```'
+                colour=randint(0, 0xffffff)
             ).set_author(name=str(author), icon_url=author.avatar_url_as(static_format='png'))
+
+            if edited == 1:
+                embed.description = f'```diff\n- {latest_snipe.content["before"]}\n+ {latest_snipe.content["after"]}```'
+            else:
+                embed.description = f'```diff\n- {latest_snipe.content}```'
 
             attachments = latest_snipe.attachments
             if attachments:
@@ -153,8 +158,8 @@ class Fun(commands.Cog):
                 embed.add_field(name='**Attachments**', value=attachment_list)
 
             await ctx.send(embed=embed)
-        else:
-            await ctx.reply('there are no snipes for this guild.')
+        except (IndexError, KeyError):
+            await ctx.reply('there are no snipes.')
 
 
 def setup(bot):

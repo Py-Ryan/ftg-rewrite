@@ -6,20 +6,17 @@ from collections import deque, namedtuple
 class Events(commands.Cog):
     """Cog that'll handle exlusively events."""
 
-    deleted_message = namedtuple('deleted_message', ['content', 'author', 'when', 'channel', 'attachments'])
+    deque_message = namedtuple('deque_message', ['content', 'author', 'when', 'channel', 'attachments'])
 
     def __init__(self, bot):
         self.bot = bot
 
     @commands.Cog.listener()
     async def on_message_delete(self, message):
-        guild = self.bot.cache.setdefault(str(message.guild.id), {'messages': {'deleted': deque()}})
-
-        if not guild.get('messages', None):
-            guild['messages'] = {'deleted': deque()}
+        guild = self.bot.cache[str(message.guild.id)]
 
         guild['messages']['deleted'].appendleft(
-            type(self).deleted_message(
+            type(self).deque_message(
                 content=message.content,
                 author=message.author.id,
                 when=datetime.now(),
@@ -27,6 +24,21 @@ class Events(commands.Cog):
                 attachments=message.attachments
             )
         )
+
+    @commands.Cog.listener()
+    async def on_message_edit(self, before, after):
+        guild = self.bot.cache[str(after.guild.id)]
+
+        if before.content != after.content:
+            guild['messages']['edited'].appendleft(
+                type(self).deque_message(
+                    content={'before': before.content, 'after': after.content},
+                    author=after.author.id,
+                    when=datetime.now(),
+                    channel=after.channel.name,
+                    attachments=after.attachments
+                )
+            )
 
 
 def setup(bot):

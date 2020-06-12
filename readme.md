@@ -110,4 +110,4 @@ A rewrote version of Ft.-Gunna
       - Added latency field for bot info.
       - Added message sniping functionality for deleted messages.
       - New extension, `events`
-        - Added `snipe` command for deleted message sniping
+        - Added `snipe` command for deleted & edited message sniping

@@ -2,6 +2,7 @@ import toml
 
 from os import listdir
 from random import randint
+from collections import deque
 from datetime import datetime
 from asyncpg import create_pool
 from discord import Game, Embed
@@ -95,6 +96,10 @@ class Ftg(commands.Bot):
             context = await self.get_context(message, cls=Context)
             await self.invoke(context)
 
+            guild = self.cache[str(message.guild.id)]
+            if not guild.get('messages', None):
+                guild['messages'] = {'deleted': deque(), 'edited': deque()}
+
     async def on_command_error(self, context, exception):
         exception = getattr(exception, 'original', exception)
 
@@ -122,8 +127,8 @@ class Ftg(commands.Bot):
 
 def get_prefix(bot, message):
     try:
-        guild = bot.cache.setdefault(str(message.guild.id), {'prefix': 'gn '})
-        return commands.when_mentioned_or(guild["prefix"])(bot, message)
+        prefix = bot.cache.setdefault(str(message.guild.id), {'prefix': 'gn '})
+        return commands.when_mentioned_or(prefix['prefix'])(bot, message)
     except AttributeError:
         return commands.when_mentioned_or('gn ')(bot, message)
 
