@@ -2,7 +2,7 @@
 A rewrote version of Ft.-Gunna
 
 # version:
-0.5.6
+0.6.0
 
 # updates:
     0.1.0:
@@ -106,5 +106,8 @@ A rewrote version of Ft.-Gunna
       - Consistency & readability improvements.
       - Edited user conversion logic in some commands. Lot more readable.
 
-   0.5.6:
+   0.6.0:
       - Added latency field for bot info.
+      - Added message sniping functionality for deleted messages.
+      - New extension, `events`
+        - Added `snipe` command for deleted message sniping
