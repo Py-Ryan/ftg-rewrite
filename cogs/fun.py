@@ -2,6 +2,7 @@ import re
 
 from random import randint
 from discord.ext import commands
+from humanize import naturaldelta
 from collections import defaultdict
 from discord import Embed, AllowedMentions
 from textwrap import wrap as insert_spaces
@@ -130,6 +131,25 @@ class Fun(commands.Cog):
         )
 
         await ctx.send(embed=embed)
+
+    @commands.command()
+    @commands.cooldown(1, 1.5, commands.BucketType.guild)
+    async def snipe(self, ctx):
+        guild_has_snipes = self.bot.cache[str(ctx.guild.id)].get('messages', None)
+
+        if guild_has_snipes:
+            latest_snipe = guild_has_snipes['deleted'][0]
+            author = ctx.guild.get_member(latest_snipe.author) or await self.bot.fetch_user(latest_snipe.author)
+
+            embed = Embed(
+                title=f'In #{latest_snipe.channel} | Around {naturaldelta(latest_snipe.when)} ago.',
+                colour=randint(0, 0xffffff),
+                description=f'```{latest_snipe.content}```'
+            ).set_author(name=str(author), icon_url=author.avatar_url_as(static_format='png'))
+
+            await ctx.send(embed=embed)
+        else:
+            await ctx.reply('there are no snipes for this guild.')
 
 
 def setup(bot):
