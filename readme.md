@@ -101,10 +101,10 @@ A rewrote version of Ft.-Gunna
        - More readable conversion logic inside the info command.
        - try/except in get_prefix is more semantically fit than if/else.
 
-   0.5.5:
-      - Version is no longer fetched each call to info. It's set at bot `start`.
-      - Consistency & readability improvements.
-      - Edited user conversion logic in some commands. Lot more readable.
+    0.5.5:
+       - Version is no longer fetched each call to info. It's set at bot `start`.
+       - Consistency & readability improvements.
+       - Edited user conversion logic in some commands. Lot more readable.
 
    0.6.0:
       - Added latency field for bot info.
