@@ -144,8 +144,13 @@ class Fun(commands.Cog):
             embed = Embed(
                 title=f'In #{latest_snipe.channel} | Around {naturaldelta(latest_snipe.when)} ago.',
                 colour=randint(0, 0xffffff),
-                description=f'```{latest_snipe.content}```'
+                description=f'```diff\n- {latest_snipe.content}```'
             ).set_author(name=str(author), icon_url=author.avatar_url_as(static_format='png'))
+
+            attachments = latest_snipe.attachments
+            if attachments:
+                attachment_list = '\n'.join(attachment.proxy_url for attachment in attachments)
+                embed.add_field(name='**Attachments**', value=attachment_list)
 
             await ctx.send(embed=embed)
         else:
