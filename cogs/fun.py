@@ -115,7 +115,7 @@ class Fun(commands.Cog):
         string = f'https://api.ipgeolocation.io/ipgeo?apiKey={self.bot.ip_key}&ip={ip.string}'
 
         async with self.bot.session.get(string) as g:
-            info = await g.json() or defaultdict(lambda: 'None')
+            info = defaultdict(lambda: 'None', await g.json())
 
         embed = (
             Embed(title=ip.string, colour=randint(0, 0xffffff))
