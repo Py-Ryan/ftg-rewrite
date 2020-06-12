@@ -13,6 +13,9 @@ class Events(commands.Cog):
 
     @commands.Cog.listener()
     async def on_message_delete(self, message):
+        if message.author.bot:
+            return
+
         guild = self.bot.cache[str(message.guild.id)]
 
         guild['messages']['deleted'].appendleft(
@@ -27,6 +30,9 @@ class Events(commands.Cog):
 
     @commands.Cog.listener()
     async def on_message_edit(self, before, after):
+        if after.author.bot:
+            return
+
         guild = self.bot.cache[str(after.guild.id)]
 
         if before.content != after.content:
