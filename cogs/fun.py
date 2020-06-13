@@ -5,9 +5,9 @@ from typing import Optional
 from discord.ext import commands
 from humanize import naturaldelta
 from collections import defaultdict
-from discord import Embed, AllowedMentions
 from textwrap import wrap as insert_spaces
 from string import ascii_letters as alphabet_
+from discord import Embed, AllowedMentions, utils
 
 
 class Fun(commands.Cog):
@@ -135,31 +135,32 @@ class Fun(commands.Cog):
 
     @commands.command()
     @commands.cooldown(1, 1.5, commands.BucketType.guild)
-    async def snipe(self, ctx, edited: Optional[int]):
-        """Snipe a deleted message. Use `<prefix>snipe 1` to snipe edited messages."""
+    async def snipe(self, ctx, category='deleted'):
+        """Snipe a deleted message."""
+        if category not in ('edited', 'deleted'):
+            category = 'deleted'
+
         try:
-            snipes = self.bot.cache[str(ctx.guild.id)]['messages']
-            latest_snipe = snipes['edited' if edited == 1 else 'deleted'][0]
-            author = ctx.guild.get_member(latest_snipe.author) or await self.bot.fetch_user(latest_snipe.author)
+            snipe = self.bot.cache[str(ctx.guild.id)][str(ctx.channel.id)]['messages'][category][0]
+            author = ctx.guild.get_member(snipe.author) or await self.bot.fetch_user(snipe.author)
 
             embed = Embed(
-                title=f'In #{latest_snipe.channel} | Around {naturaldelta(latest_snipe.when)} ago.',
+                title=f'In #{snipe.channel} | Around {naturaldelta(snipe.when)} ago.',
                 colour=randint(0, 0xffffff)
-            ).set_author(name=str(author), icon_url=author.avatar_url_as(static_format='png'))
+            ).set_author(name=f'{author} ({author.id})', icon_url=author.avatar_url_as(static_format='png'))
 
-            if edited == 1:
-                embed.description = f'```diff\n- {latest_snipe.content["before"]}\n+ {latest_snipe.content["after"]}```'
+            if category == 'deleted':
+                embed.description = f'```diff\n- {utils.escape_markdown(snipe.content)}```'
             else:
-                embed.description = f'```diff\n- {latest_snipe.content}```'
+                embed.description = f"```diff\n- {utils.escape_markdown(snipe.content['b'])}\n+ {utils.escape_markdown(snipe.content['a'])}```"
 
-            attachments = latest_snipe.attachments
+            attachments = snipe.attachments
             if attachments:
-                attachment_list = '\n'.join(attachment.proxy_url for attachment in attachments)
-                embed.add_field(name='**Attachments**', value=attachment_list)
+                embed.add_field(name='**Attachments**', value='\n'.join(a.proxy_url for a in attachments))
 
             await ctx.send(embed=embed)
-        except (IndexError, KeyError):
-            await ctx.reply('there are no snipes.')
+        except (KeyError, IndexError):
+            await ctx.reply('there are no snipes for this channel.')
 
 
 def setup(bot):
