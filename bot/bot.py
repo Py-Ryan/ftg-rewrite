@@ -93,12 +93,11 @@ class Ftg(commands.Bot):
 
     async def on_message(self, message):
         if self.is_ready():
+            guild = self.cache.setdefault(str(message.guild.id), {'prefix': 'gn '})
+            channel = guild.setdefault(str(message.channel.id), {'messages': {'deleted': deque(), 'edited': deque()}})
+
             context = await self.get_context(message, cls=Context)
             await self.invoke(context)
-
-            guild = self.cache[str(message.guild.id)]
-            if not guild.get('messages', None):
-                guild['messages'] = {'deleted': deque(), 'edited': deque()}
 
     async def on_command_error(self, context, exception):
         exception = getattr(exception, 'original', exception)
@@ -127,8 +126,8 @@ class Ftg(commands.Bot):
 
 def get_prefix(bot, message):
     try:
-        prefix = bot.cache.setdefault(str(message.guild.id), {'prefix': 'gn '})
-        return commands.when_mentioned_or(prefix['prefix'])(bot, message)
+        prefix = bot.cache.get(str(message.guild.id), {'prefix': 'gn '})['prefix']
+        return commands.when_mentioned_or(prefix)(bot, message)
     except AttributeError:
         return commands.when_mentioned_or('gn ')(bot, message)
 
