@@ -61,7 +61,7 @@ class Meta(commands.Cog):
         await ctx.send(embed=embed)
 
     @info.command(name='cog')
-    @commands.cooldown(1, 2, commands.BucketType.guild)
+    @commands.cooldown(1, 1.5, commands.BucketType.guild)
     async def info_cog(self, ctx, *, cog='Fun'):
         cog = cog.capitalize()
         info_cog = self.bot.cogs.get(cog, None)
