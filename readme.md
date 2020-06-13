@@ -111,3 +111,4 @@ A rewrote version of Ft.-Gunna
       - Added message sniping functionality for deleted messages.
       - New extension, `events`
         - Added `snipe` command for deleted & edited message sniping
+      - Decent refactor to cache logic.
