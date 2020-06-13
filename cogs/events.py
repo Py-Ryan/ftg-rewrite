@@ -1,5 +1,6 @@
 from datetime import datetime
 from discord.ext import commands
+from aiohttp import MultipartWriter
 from collections import deque, namedtuple
 
 
@@ -13,32 +14,27 @@ class Events(commands.Cog):
 
     @commands.Cog.listener()
     async def on_message_delete(self, message):
-        if message.author.bot:
-            return
+        if not message.author.bot:
+            channel = self.bot.cache[str(message.guild.id)][str(message.channel.id)]['messages']['deleted']
 
-        guild = self.bot.cache[str(message.guild.id)]
-
-        guild['messages']['deleted'].appendleft(
-            type(self).deque_message(
-                content=message.content,
-                author=message.author.id,
-                when=datetime.now(),
-                channel=message.channel.name,
-                attachments=message.attachments
+            channel.appendleft(
+                    type(self).deque_message(
+                    content=message.content,
+                    author=message.author.id,
+                    when=datetime.now(),
+                    channel=message.channel.name,
+                    attachments=message.attachments
+                )
             )
-        )
 
     @commands.Cog.listener()
     async def on_message_edit(self, before, after):
-        if after.author.bot:
-            return
+        if not after.author.bot:
+            channel = self.bot.cache[str(after.guild.id)][str(after.channel.id)]['messages']['edited']
 
-        guild = self.bot.cache[str(after.guild.id)]
-
-        if before.content != after.content:
-            guild['messages']['edited'].appendleft(
-                type(self).deque_message(
-                    content={'before': before.content, 'after': after.content},
+            channel.appendleft(
+                    type(self).deque_message(
+                    content={'b': before.content, 'a': after.content},
                     author=after.author.id,
                     when=datetime.now(),
                     channel=after.channel.name,
