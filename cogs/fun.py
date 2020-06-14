@@ -1,5 +1,5 @@
 import re
-
+from io import StringIO
 from random import randint
 from typing import Optional
 from discord.ext import commands
@@ -27,10 +27,11 @@ class Fun(commands.Cog):
                 if url_code:
                     await ctx.reply(f'https://haste.crrapi.xyz/raw/{url_code}')
                 else:
-                    with open('binary.txt', 'r+') as f:
+                    with StringIO() as f:
                         f.write(output)
-                    file = File('binary.txt', filename='binary.txt')
-                    await ctx.reply('Too long for any haste servers.', file=file)
+                        f.seek(0)
+                        file = File(f, filename='binary.txt')
+                        await ctx.reply('Too long for any haste servers.', file=file)
         else:
             await ctx.reply(output, allowed_mentions=AllowedMentions(everyone=False, roles=False, users=[ctx.author]))
 
