@@ -2,7 +2,7 @@
 A rewrote version of Ft.-Gunna
 
 # version:
-0.6.0
+0.6.1
 
 # updates:
       0.1.0:
@@ -114,5 +114,5 @@ A rewrote version of Ft.-Gunna
         - Added snipe command to fun cog.
         - Decent refactor to cache logic.
 
-      0.6.1:
-      - Finally cleanup aiohttp session on bot exit.
+       0.6.1:
+        - Finally cleanup aiohttp session on bot exit.
