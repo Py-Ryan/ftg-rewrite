@@ -1,4 +1,5 @@
 import toml
+import asyncio
 
 from os import listdir
 from random import randint
@@ -46,7 +47,19 @@ class Ftg(commands.Bot):
         """Formatted bot uptime."""
         return naturaldelta(self._raw_uptime) if self._raw_uptime else None
 
-    async def setup(self):
+    async def finish(self):
+        """Close the bot and release the aiohttp session."""
+        await self.db.close()
+        await self.session.close()
+        await super().logout()
+
+    async def start(self):
+        """Connects the bot to discord & mounts the cogs."""
+        for ext in self.modules:
+            if not ext.startswith('__'):
+                self.load_extension(f'cogs.{ext[:-3]}')
+                print(f'Loaded {ext}.')
+
         (self.db, self.session) = (await create_pool(
             self.db_url,
             min_size=1,
@@ -56,22 +69,11 @@ class Ftg(commands.Bot):
         async with self.session.get('https://raw.githubusercontent.com/Py-Ryan/ftg-rewrite/master/readme.md') as get:
             self.__version__ = (await get.text()).split("\n")[4]
 
-    def run(self):
-        """Connects the bot to discord & mounts the cogs."""
-        for ext in self.modules:
-            if not ext.startswith('__'):
-                self.load_extension(f'cogs.{ext[:-3]}')
-                print(f'Loaded {ext}.')
-
-        self.loop.run_until_complete(self.setup())
-
-        guilds = self.loop.run_until_complete(
-            self.db.fetch(
-                """
-                SELECT (id, prefix)
-                FROM guilds
-                """
-            )
+        guilds = await self.db.fetch(
+            """
+            SELECT (id, prefix)
+            FROM guilds
+            """
         )
 
         for row in guilds:
@@ -85,7 +87,7 @@ class Ftg(commands.Bot):
                 obj._raw_uptime = datetime.now()
 
         self.load_extension("jishaku")
-        super().run(self.token)
+        await super().start(self.token)
 
     async def on_ready(self):
         if self._raw_uptime <= datetime.utcnow():
@@ -140,4 +142,8 @@ ftg = Ftg(
 )
 
 if __name__ == '__main__':
-    ftg.run()
+    loop = asyncio.get_event_loop()
+    try:
+        loop.run_until_complete(ftg.start())
+    except KeyboardInterrupt:
+        loop.run_until_complete(ftg.finish())
