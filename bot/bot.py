@@ -30,8 +30,8 @@ class Context(commands.Context):
 class MessageCache(deque):
     """Cache for deleted and edited messages."""
 
-    def __init__(self, maxsize=128, *args, **kwargs):
-        self.maxsize = maxsize
+    def __init__(self, *args, **kwargs):
+        self.maxsize = kwargs.pop('maxsize', 128)
         super().__init__(*args, **kwargs)
 
     def appendleft(self, *args):
