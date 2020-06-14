@@ -3,7 +3,6 @@ from discord.ext import commands
 from aiohttp import MultipartWriter
 from collections import deque, namedtuple
 
-
 class Events(commands.Cog):
     """Cog that'll handle exlusively events."""
 

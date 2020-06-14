@@ -5,7 +5,6 @@ from discord.ext import commands
 from typing import Union, Optional
 from discord import User, Embed, Member, Status, Colour, HTTPException
 
-
 class Meta(commands.Cog):
     """Cog used for general commands that don't belong anywhere specific."""
 

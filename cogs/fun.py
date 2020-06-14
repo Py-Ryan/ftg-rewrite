@@ -10,7 +10,6 @@ from textwrap import wrap as insert_spaces
 from string import ascii_letters as alphabet_
 from discord import Embed, AllowedMentions, utils, File
 
-
 class Fun(commands.Cog):
     """Cog used for fun commands."""
 

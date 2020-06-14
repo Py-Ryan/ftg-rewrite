@@ -12,13 +12,11 @@ from humanize import naturaldelta
 from aiohttp import ClientSession
 from traceback import format_exception
 
-
 with open('bot/config.toml', 'r') as file:
     config = toml.load(file).get('credentials', None)
 
     if not {'token', 'db_url'} <= set(config):
         raise ValueError("TOML config file missing `token` and/or `db_url` keys.")
-
 
 class Context(commands.Context):
 
@@ -29,6 +27,18 @@ class Context(commands.Context):
         """Kinda like discord.js user.reply."""
         return await self.send(f'{self.author.mention}, {content}', **kwargs)
 
+class MessageCache(deque):
+    """Cache for deleted and edited messages."""
+
+    def __init__(self, maxsize=128, *args, **kwargs):
+        self.maxsize = maxsize
+        super().__init__(*args, **kwargs)
+
+    def appendleft(self, *args):
+        if len(self) >= self.maxsize:
+            print('reached max size: deleting last element.')
+            del self[-1]
+        super().appendleft(*args)
 
 class Ftg(commands.Bot):
     __slots__ = ('db_url', 'token', '_raw_uptime', 'db', 'cache', 'session')
@@ -97,10 +107,10 @@ class Ftg(commands.Bot):
         if self.is_ready():
             try:
                 guild = self.cache.setdefault(str(message.guild.id), {'prefix': 'gn '})
-                channel = guild.setdefault(str(message.channel.id), {'messages': {'deleted': deque(), 'edited': deque()}})
+                channel = guild.setdefault(str(message.channel.id), {'messages': {'deleted': MessageCache(), 'edited': MessageCache()}})
             except AttributeError:
                 pass
-                
+
             context = await self.get_context(message, cls=Context)
             await self.invoke(context)
 
