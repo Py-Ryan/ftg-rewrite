@@ -2,7 +2,7 @@
 A rewrote version of Ft.-Gunna
 
 # version:
-0.6.1
+0.6.2
 
 # updates:
       0.1.0:
@@ -118,3 +118,6 @@ A rewrote version of Ft.-Gunna
         - Finally cleanup aiohttp session on bot exit.
         - Upload binary output to file if haste fails.
         - Use mystbin instead of haste.
+
+      0.6.2:
+        - Instead of a raw deque, deleted & edited messages are now stored in a MessageCache.
