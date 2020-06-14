@@ -7,7 +7,7 @@ from humanize import naturaldelta
 from collections import defaultdict
 from textwrap import wrap as insert_spaces
 from string import ascii_letters as alphabet_
-from discord import Embed, AllowedMentions, utils
+from discord import Embed, AllowedMentions, utils, File
 
 
 class Fun(commands.Cog):
@@ -19,15 +19,20 @@ class Fun(commands.Cog):
     binary_regex = re.compile(r'^[0-1]{8}$')
     ip_regex = re.compile(r'\b(?:[0-9]{1,3}\.){3}[0-9]{1,3}\b')
 
-    async def _haste_helper(self, ctx, output, limit=200):
+    async def _haste_helper(self, ctx, output):
         """Helper function that posts long outputs of conversion commands to a haste server."""
-        if len(output) >= (int(limit) or 200):
+        if len(output) >= 200:
             async with self.bot.session.post('https://haste.crrapi.xyz/documents', data=output) as post:
                 url_code = (await post.json()).get('key', None)
                 if url_code:
-                    return await ctx.reply(f'https://haste.crrapi.xyz/raw/{url_code}')
-
-        await ctx.reply(output, allowed_mentions=AllowedMentions(everyone=False, roles=False, users=[ctx.author]))
+                    await ctx.reply(f'https://haste.crrapi.xyz/raw/{url_code}')
+                else:
+                    with open('binary.txt', 'r+') as f:
+                        f.write(output)
+                    file = File('binary.txt', filename='binary.txt')
+                    await ctx.reply('Too long for any haste servers.', file=file)
+        else:
+            await ctx.reply(output, allowed_mentions=AllowedMentions(everyone=False, roles=False, users=[ctx.author]))
 
     @staticmethod
     async def _attachment_helper(ctx):
