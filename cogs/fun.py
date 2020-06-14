@@ -22,16 +22,16 @@ class Fun(commands.Cog):
     async def _haste_helper(self, ctx, output):
         """Helper function that posts long outputs of conversion commands to a haste server."""
         if len(output) >= 200:
-            async with self.bot.session.post('https://haste.crrapi.xyz/documents', data=output) as post:
+            async with self.bot.session.post('https://mystb.in/documents', data=output) as post:
                 url_code = (await post.json()).get('key', None)
                 if url_code:
-                    await ctx.reply(f'https://haste.crrapi.xyz/raw/{url_code}')
+                    await ctx.reply(f'https://mystb.in/raw/{url_code}')
                 else:
                     with StringIO() as f:
                         f.write(output)
                         f.seek(0)
                         file = File(f, filename='binary.txt')
-                        await ctx.reply('Too long for any haste servers.', file=file)
+                        await ctx.reply('Too long. Heres a file.', file=file)
         else:
             await ctx.reply(output, allowed_mentions=AllowedMentions(everyone=False, roles=False, users=[ctx.author]))
 

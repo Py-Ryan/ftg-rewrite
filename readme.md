@@ -117,3 +117,4 @@ A rewrote version of Ft.-Gunna
        0.6.1:
         - Finally cleanup aiohttp session on bot exit.
         - Upload binary output to file if haste fails.
+        - Use mystbin instead of haste.
