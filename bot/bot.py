@@ -36,7 +36,6 @@ class MessageCache(deque):
 
     def appendleft(self, *args):
         if len(self) >= self.maxsize:
-            print('reached max size: deleting last element.')
             del self[-1]
         super().appendleft(*args)
 
