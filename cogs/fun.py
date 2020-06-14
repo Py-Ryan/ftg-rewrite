@@ -3,7 +3,7 @@ from io import StringIO
 from random import randint
 from typing import Optional
 from discord.ext import commands
-from humanize import naturaldelta
+from humanize import naturaltime
 from collections import defaultdict
 from textwrap import wrap as insert_spaces
 from string import ascii_letters as alphabet_
@@ -151,7 +151,7 @@ class Fun(commands.Cog):
             author = ctx.guild.get_member(snipe.author) or await self.bot.fetch_user(snipe.author)
 
             embed = Embed(
-                title=f'In #{snipe.channel} | Around {naturaldelta(snipe.when)} ago.',
+                title=f'In #{snipe.channel} | Around {naturaltime(snipe.when)}.',
                 colour=randint(0, 0xffffff)
             ).set_author(name=f'{author} ({author.id})', icon_url=author.avatar_url_as(static_format='png'))
 
