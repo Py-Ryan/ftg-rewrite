@@ -12,11 +12,13 @@ from humanize import naturaldelta
 from aiohttp import ClientSession
 from traceback import format_exception
 
+
 with open('bot/config.toml', 'r') as file:
     config = toml.load(file).get('credentials', None)
 
     if not {'token', 'db_url'} <= set(config):
         raise ValueError("TOML config file missing `token` and/or `db_url` keys.")
+
 
 class Context(commands.Context):
 
@@ -33,6 +35,7 @@ class Context(commands.Context):
         else:
             await self.send(f'{self.author.mention}, {content}', **kwargs)
 
+
 class MessageCache(deque):
     """FIFO/LRU cache for deleted & edited messages."""
 
@@ -44,6 +47,7 @@ class MessageCache(deque):
         if len(self) >= self.maxsize:
             del self[-1]
         super().appendleft(*args)
+
 
 class Ftg(commands.Bot):
     __slots__ = ('db_url', 'token', '_raw_uptime', 'db', 'cache', 'session')
