@@ -121,3 +121,6 @@ A rewrote version of Ft.-Gunna
 
       0.6.2:
         - Instead of a raw deque, deleted & edited messages are now stored in a MessageCache.
+
+      0.7.0:
+        - Add use_embed keyword argument to ctx.reply for easy embedding.

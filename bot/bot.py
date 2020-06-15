@@ -25,10 +25,16 @@ class Context(commands.Context):
 
     async def reply(self, content, **kwargs):
         """Kinda like discord.js user.reply."""
-        return await self.send(f'{self.author.mention}, {content}', **kwargs)
+        use_embed = kwargs.pop('use_embed', False)
+
+        if use_embed is True:
+            embed = Embed(description=f'{self.author.mention}, {content}', colour=0x36393E)
+            await self.send(embed=embed, **kwargs)
+        else:
+            await self.send(f'{self.author.mention}, {content}', **kwargs)
 
 class MessageCache(deque):
-    """Cache for deleted and edited messages."""
+    """FIFO/LRU cache for deleted & edited messages."""
 
     def __init__(self, *args, **kwargs):
         self.maxsize = kwargs.pop('maxsize', 128)
