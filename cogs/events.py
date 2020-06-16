@@ -1,6 +1,5 @@
 from datetime import datetime
 from discord.ext import commands
-from aiohttp import MultipartWriter
 from collections import deque, namedtuple
 
 
