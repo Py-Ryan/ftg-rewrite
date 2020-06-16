@@ -129,9 +129,9 @@ class Ftg(commands.Bot):
         if not isinstance(exception, (commands.CommandNotFound, commands.CommandOnCooldown)):
             tb = '\n'.join(format_exception(etype=type(exception), value=exception, tb=exception.__traceback__))
 
-            async with self.session.post('https://haste.crrapi.xyz/documents', data=tb) as post:
+            async with self.session.post('https://mystb.in/documents', data=tb) as post:
                 key = (await post.json()).get('key', None)
-                tb = f'https://haste.crrapi.xyz/{key}' if key else None
+                tb = f'https://mystb.in/raw/{key}' if key else None
 
             embed = (
                 Embed(
