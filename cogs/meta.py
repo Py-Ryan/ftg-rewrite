@@ -15,7 +15,7 @@ class BetterUserConverter(commands.Converter):
             converter = commands.UserConverter()
             result = await converter.convert(ctx, argument)
         except commands.BadArgument:
-            with suppress(HTTPException, TypeError):
+            with suppress(HTTPException, ValueError):
                 result = await ctx.bot.fetch_user(int(argument))
         finally:
             return result
