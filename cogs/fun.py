@@ -24,24 +24,20 @@ class Fun(commands.Cog):
         """Helper function that posts long outputs of conversion commands to a haste server."""
         if len(output) >= 200:
             async with self.bot.session.post('https://mystb.in/documents', data=output) as post:
-                url_code = (await post.json()).get('key', None)
-                if url_code:
-                    await ctx.reply(f'https://mystb.in/raw/{url_code}')
+                if url := (await post.json()).get('key'):
+                    await ctx.reply(f'https://mystb.in/raw/{url}')
                 else:
                     with StringIO() as f:
                         f.write(output)
                         f.seek(0)
-                        file = File(f, filename='binary.txt')
-                        await ctx.reply('Too long. Heres a file.', file=file)
+                        await ctx.reply('Too long. Heres a file.', file=File(f, filename='binary.txt'))
         else:
             await ctx.reply(output, allowed_mentions=AllowedMentions(everyone=False, roles=False, users=[ctx.author]))
 
     @staticmethod
     async def _attachment_helper(ctx):
         output = ''
-        attachments = ctx.message.attachments
-
-        if attachments:
+        if attachments := ctx.message.attachments:
             for attachment in attachments:
                 try:
                     output += ''.join((await attachment.read()).decode('utf-8').replace(' ', '\n'))
@@ -89,7 +85,7 @@ class Fun(commands.Cog):
 
         async with self.bot.session.get(f'http://www.morsecode-api.de/{operator}?string={text}') as get:
             key = 'morsecode' if operator == 'encode' else 'plaintext'
-            output = (await get.json()).get(key, None)
+            output = (await get.json()).get(key)
 
         if len(output) <= 1:
             await ctx.reply('invalid morse code.')
