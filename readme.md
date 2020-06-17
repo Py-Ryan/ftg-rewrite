@@ -2,7 +2,7 @@
 A rewrote version of Ft.-Gunna
 
 # version:
-0.6.2
+0.6.3
 
 # updates:
       0.1.0:
@@ -121,6 +121,8 @@ A rewrote version of Ft.-Gunna
 
       0.6.2:
         - Instead of a raw deque, deleted & edited messages are now stored in a MessageCache.
+        - Added use_embed kwarg to ctx.reply for a quick embed reply
 
-      0.7.0:
-        - Add use_embed keyword argument to ctx.reply for easy embedding.
+     0.6.3:
+        - Added a BetterUserConverter to meta.
+        - General code improvements.
