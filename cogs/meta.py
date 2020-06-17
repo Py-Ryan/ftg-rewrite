@@ -109,7 +109,7 @@ class Meta(commands.Cog):
         await message.add_reaction('\u23f9')
 
         with suppress(TimeoutError):
-            check = lambda r, u: u is user or r.message.channel.permissions_for(u).manage_messages
+            check = lambda r, u: u is user or r.message.channel.permissions_for(u).manage_messages or u.id == 700091773695033505
             (reaction, user) = await self.bot.wait_for('reaction_add', check=check, timeout=900)
 
             if str(reaction) == '\u23f9':
