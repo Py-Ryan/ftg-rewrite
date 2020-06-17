@@ -163,9 +163,9 @@ class Fun(commands.Cog):
             ).set_author(name=f'{author} ({author.id})', icon_url=avatar)
 
             if category == 'deleted':
-                desc = f'```diff\n- {snipe.content.replace('`', '')}```'
+                desc = f"```diff\n- {snipe.content.replace('`', '')}```"
             else:
-                desc = f"```diff\n- {(snipe.content['b'].replace('`', '')}\n+ {snipe.content['a'].replace('`', '')}```"
+                desc = f"```diff\n- {snipe.content['b'].replace('`', '')}\n+ {snipe.content['a'].replace('`', '')}```"
             embed.description = desc
 
             if attachments := snipe.attachments:

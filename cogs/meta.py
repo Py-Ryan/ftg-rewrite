@@ -37,13 +37,13 @@ class Meta(commands.Cog):
     @commands.guild_only()
     @commands.cooldown(1, 1.5, commands.BucketType.guild)
     async def info(self, ctx, *, snwflake: Union[Member, BetterUserConverter, str] = None):
-        snwflake = ctx.author if snwflake == 'me' else snwsnwflakeflk or ctx.guild.me
+        snwflake = ctx.author if snwflake == 'me' else snwflake or ctx.guild.me
 
         git      = f'[Source Code](https://github.com/Py-Ryan/ftg-rewrite)'
         uid      = snwflake.id
         desc     =  f'[Avatar Link]({snwflake.avatar_url})' if uid != self.bot.user.id else git
-        colour   = cases[getattr(snwflake, 'status', Status.offline)]
-        avatar   = str(snwflk.avatar_url_as(static_format='png'))
+        colour   = self.status_cases[getattr(snwflake, 'status', Status.offline)]
+        avatar   = str(snwflake.avatar_url_as(static_format='png'))
         joined   = naturaltime(getattr(snwflake, 'joined_at', 'None'))
         created  = naturaltime(snwflake.created_at)
         top_role = str(getattr(snwflake, 'top_role', None))
@@ -62,7 +62,7 @@ class Meta(commands.Cog):
             for i in (-1, -2):
                 embed.remove_field(i)
 
-        if snwflk is ctx.guild.me:
+        if snwflake is ctx.guild.me:
             uptime  = self.bot.uptime
             version = self.bot.__version__
             latency = round(self.bot.latency * 1000)
@@ -79,14 +79,15 @@ class Meta(commands.Cog):
         cogs = self.bot.cogs
         cog  = cogs.get(cog.capitalize()) or cogs['Meta']
 
-        loc       = info_cog.loc
+        loc       = cog.loc
         avatar    = str(self.bot.user.avatar_url_as(static_format='png'))
-        uptime    = naturaltime(info_cog._raw_uptime)
-        cmd_count = len(info_cog.get_commands())
-        info_desc = f'Information on the {type(cog).__name__.lower()} extension.'
+        uptime    = naturaltime(cog._raw_uptime)
+        cog_name  = type(cog).__name__.lower()
+        cmd_count = len(cog.get_commands())
+        info_desc = f'Information on the {cog_name} extension.'
 
         info = (
-            Embed(title=cog, description=info_desc, colour=randint(0, 0xffffff))
+            Embed(title=cog_name.capitalize(), description=info_desc, colour=randint(0, 0xffffff))
             .add_field(name='**Command Count**', value=cmd_count, inline=True)
             .add_field(name='**Lines Of Code**', value=loc, inline=True)
             .set_footer(text=f'Extension loaded {uptime}.')
