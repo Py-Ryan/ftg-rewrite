@@ -26,31 +26,30 @@ class Meta(commands.Cog):
 
     def __init__(self, bot):
         self.bot = bot
-
-    @commands.group(invoke_without_command=True)
-    @commands.guild_only()
-    @commands.cooldown(1, 1.5, commands.BucketType.guild)
-    async def info(self, ctx, *, snwflk: Union[Member, BetterUserConverter, str] = None):
-        snwflk = ctx.author if snwflk == 'me' else snwflk or ctx.guild.me
-
-        cases = {
+        self.status_cases = {
             Status.online: Colour.green(),
             Status.idle: Colour.orange(),
             Status.dnd: Colour.red(),
             Status.offline: Colour.light_grey()
         }
 
+    @commands.group(invoke_without_command=True)
+    @commands.guild_only()
+    @commands.cooldown(1, 1.5, commands.BucketType.guild)
+    async def info(self, ctx, *, snwflake: Union[Member, BetterUserConverter, str] = None):
+        snwflake = ctx.author if snwflake == 'me' else snwsnwflakeflk or ctx.guild.me
+
         git      = f'[Source Code](https://github.com/Py-Ryan/ftg-rewrite)'
-        uid      = snwflk.id
-        desc     =  f'[Avatar Link]({snwflk.avatar_url})' if uid != self.bot.user.id else git
-        colour   = cases[getattr(snwflk, 'status', Status.offline)]
+        uid      = snwflake.id
+        desc     =  f'[Avatar Link]({snwflake.avatar_url})' if uid != self.bot.user.id else git
+        colour   = cases[getattr(snwflake, 'status', Status.offline)]
         avatar   = str(snwflk.avatar_url_as(static_format='png'))
-        joined   = naturaltime(getattr(snwflk, 'joined_at', 'None'))
-        created  = naturaltime(snwflk.created_at)
-        top_role = str(getattr(snwflk, 'top_role', None))
+        joined   = naturaltime(getattr(snwflake, 'joined_at', 'None'))
+        created  = naturaltime(snwflake.created_at)
+        top_role = str(getattr(snwflake, 'top_role', None))
 
         embed = (
-            Embed(title=str(snwflk), colour=colour, description=desc)
+            Embed(title=str(snwflake), colour=colour, description=desc)
             .add_field(name='**Account Created**', value=created, inline=True)
             .add_field(name='**Joined**', value=joined, inline=True)
             .add_field(name='**User ID**', value=uid, inline=False)
@@ -58,15 +57,15 @@ class Meta(commands.Cog):
             .set_thumbnail(url=avatar)
         )
 
-        if isinstance(snwflk, User):
+        if isinstance(snwflake, User):
             embed.set_footer(text='This user is not in this guild.')
             for i in (-1, -2):
                 embed.remove_field(i)
 
         if snwflk is ctx.guild.me:
             uptime  = self.bot.uptime
-            latency = round(self.bot.latency * 1000)
             version = self.bot.__version__
+            latency = round(self.bot.latency * 1000)
 
             embed.add_field(name='**Uptime**', value=uptime)
             embed.add_field(name='**Latency**', value=f'{latency}ms', inline=False)
@@ -77,41 +76,43 @@ class Meta(commands.Cog):
     @info.command(name='cog')
     @commands.cooldown(1, 1.5, commands.BucketType.guild)
     async def info_cog(self, ctx, *, cog='Fun'):
-        cog = cog.capitalize()
-        info_cog = self.bot.cogs.get(cog, None)
+        cogs = self.bot.cogs
+        cog  = cogs.get(cog.capitalize()) or cogs['Meta']
 
         loc       = info_cog.loc
         avatar    = str(self.bot.user.avatar_url_as(static_format='png'))
         uptime    = naturaltime(info_cog._raw_uptime)
         cmd_count = len(info_cog.get_commands())
+        info_desc = f'Information on the {type(cog).__name__.lower()} extension.'
 
-        if info_cog:
-            info = (
-                Embed(
-                    title=cog,
-                    description=f'Information on the {cog.lower()} extension.',
-                    colour=randint(0, 0xffffff)
-                )
-                .add_field(name='**Command Count**', value=cmd_count, inline=True)
-                .add_field(name='**Lines Of Code**', value=loc, inline=True)
-                .set_thumbnail(url=avatar)
-                .set_footer(text=f'Extension loaded {uptime}.')
-            )
+        info = (
+            Embed(title=cog, description=info_desc, colour=randint(0, 0xffffff))
+            .add_field(name='**Command Count**', value=cmd_count, inline=True)
+            .add_field(name='**Lines Of Code**', value=loc, inline=True)
+            .set_footer(text=f'Extension loaded {uptime}.')
+            .set_thumbnail(url=avatar)
+        )
 
-            await ctx.send(embed=info)
-        else:
-            await ctx.reply(f'no cogs named {cog}.')
+        await ctx.send(embed=info)
 
     @commands.command(aliases=['avatar', 'pfp'])
     @commands.cooldown(1, 1.5, commands.BucketType.guild)
     async def av(self, ctx, *, user: Union[BetterUserConverter, str] = None):
-        user   = ctx.author if not user or user == 'me' else user
+        user   = ctx.author if user == 'me' or not user else user
         avatar = str(user.avatar_url_as(static_format='png'))
 
         embed = Embed(title=f"{user}'s avatar:", url=avatar, colour=randint(0, 0xffffff))
         embed.set_image(url=avatar)
 
-        await ctx.send(embed=embed)
+        message = await ctx.send(embed=embed)
+        await message.add_reaction('\u23f9')
+
+        with suppress(TimeoutError):
+            check = lambda r, u: u is user or r.message.channel.permissions_for(u).manage_messages
+            (reaction, user) = await self.bot.wait_for('reaction_add', check=check, timeout=900)
+
+            if str(reaction) == '\u23f9':
+                await message.delete()
 
     @commands.command()
     @commands.has_permissions(administrator=True)
