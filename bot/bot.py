@@ -55,8 +55,8 @@ class Ftg(commands.Bot):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.cache = {}
+        self.db = self.session = None
         self._raw_uptime = datetime.now()
-        (self.db, self.session) = (None, None)
 
         for (attribute, value) in kwargs.items():
             setattr(self, attribute, value)
@@ -64,7 +64,7 @@ class Ftg(commands.Bot):
     @property
     def uptime(self):
         """Formatted bot uptime."""
-        return naturaldelta(self._raw_uptime) if self._raw_uptime else None
+        return naturaldelta(self._raw_uptime)
 
     async def finish(self):
         """Close the bot and release the aiohttp session."""
@@ -109,7 +109,7 @@ class Ftg(commands.Bot):
         await super().start(self.token)
 
     async def on_ready(self):
-        if self._raw_uptime <= datetime.utcnow():
+        if self._raw_uptime <= datetime.now():
             print(f'{self.user} is ready.')
 
     async def on_message(self, message):
