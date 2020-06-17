@@ -2,7 +2,7 @@
 A rewrote version of Ft.-Gunna
 
 # version:
-0.6.3
+0.6.4
 
 # updates:
       0.1.0:
@@ -126,3 +126,8 @@ A rewrote version of Ft.-Gunna
        0.6.3:
         - Added a BetterUserConverter to meta.
         - General code improvements.
+
+       0.6.4:
+        - Added option to remove avatar embed for manage_messages & the author. (in case nsfw)
+        - Commands with input tend to default to the author if the input is invalid.
+        - Fixed BetterUserConverter suppression. Had incorrect type to suppress.
