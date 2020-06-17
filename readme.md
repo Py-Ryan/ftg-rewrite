@@ -131,3 +131,4 @@ A rewrote version of Ft.-Gunna
         - Added option to remove avatar embed for manage_messages & the author. (in case nsfw)
         - Commands with input tend to default to the author if the input is invalid.
         - Fixed BetterUserConverter suppression. Had incorrect type to suppress.
+        - Fixed ip command from breaking with no input.
