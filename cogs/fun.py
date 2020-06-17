@@ -6,10 +6,10 @@ from typing import Optional
 from discord.ext import commands
 from humanize import naturaltime
 from collections import defaultdict
+from .meta import BetterUserConverter
 from textwrap import wrap as insert_spaces
 from string import ascii_letters as alphabet_
 from discord import Embed, AllowedMentions, utils, File
-
 
 class Fun(commands.Cog):
     """Cog used for fun commands."""
@@ -17,8 +17,8 @@ class Fun(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
+    ip_regex     = re.compile(r'\b(?:[0-9]{1,3}\.){3}[0-9]{1,3}\b')
     binary_regex = re.compile(r'^[0-1]{8}$')
-    ip_regex = re.compile(r'\b(?:[0-9]{1,3}\.){3}[0-9]{1,3}\b')
 
     async def _haste_helper(self, ctx, output):
         """Helper function that posts long outputs of conversion commands to a haste server."""
@@ -83,7 +83,8 @@ class Fun(commands.Cog):
         text = await type(self)._attachment_helper(ctx) or text
         operator = 'decode' if {'.', '-', ' '}.issuperset(text) else 'encode'
 
-        async with self.bot.session.get(f'http://www.morsecode-api.de/{operator}?string={text}') as get:
+        url = f'http://www.morsecode-api.de/{operator}?string={text}'
+        async with self.bot.session.get(url) as get:
             key = 'morsecode' if operator == 'encode' else 'plaintext'
             output = (await get.json()).get(key)
 
@@ -104,34 +105,42 @@ class Fun(commands.Cog):
     async def catfact(self, ctx):
         """Random cat facts. UwU."""
         async with self.bot.session.get('https://catfact.ninja/fact?max_length=100') as g:
-            embed = Embed(description=(await g.json()).get('fact', None), colour=randint(0, 0xffffff))
+            fact  = (await g.json()).get('fact')
+            embed = Embed(description=fact, colour=randint(0, 0xffffff))
             await ctx.send(embed=embed)
 
     @commands.command()
     @commands.cooldown(1, 1.5, commands.BucketType.guild)
-    async def ip(self, ctx, *, ip):
+    async def ip(self, ctx, *, ip=''):
         """Get information regarding a specific IP address."""
         ip = re.search(type(self).ip_regex, ip)
 
         if not ip:
             return await ctx.reply('invalid ip.')
 
-        string = f'https://api.ipgeolocation.io/ipgeo?apiKey={self.bot.ip_key}&ip={ip.string}'
-
-        async with self.bot.session.get(string) as g:
+        url = f'https://api.ipgeolocation.io/ipgeo?apiKey={self.bot.ip_key}&ip={ip.string}'
+        async with self.bot.session.get(url) as g:
             info = defaultdict(lambda: 'None', await g.json())
+
+        lat        = info['latitude']
+        city       = info['city']
+        flag       = info['country_flag']
+        long       = info['longitude']
+        country    = info['country']
+        zipcode    = info['zipcode']
+        calling    = info['calling_code']
+        continent  = info['continent_name']
+        state_prov = info['state_prov']
 
         embed = (
             Embed(title=ip.string, colour=randint(0, 0xffffff))
-            .add_field(name='**Continent:**', value=info['continent_name'], inline=True)
-            .add_field(name='**Country:**', value=info['country_name'], inline=True)
-            .add_field(name='**State/Province:**', value=info['state_prov'], inline=False)
-            .add_field(name='**City:**', value=info['city'], inline=True)
-            .add_field(name='**Zip:**', value=info['zipcode'], inline=False)
-            .set_footer(
-                text=f'Calling Code: {info["calling_code"]} | Lat: {info["latitude"]} | Long: {info["longitude"]}'
-            )
-            .set_thumbnail(url=info['country_flag'])
+            .add_field(name='**Continent:**', value=continent, inline=True)
+            .add_field(name='**Country:**', value=country, inline=True)
+            .add_field(name='**State/Province:**', value=state_prov, inline=False)
+            .add_field(name='**City:**', value=city, inline=True)
+            .add_field(name='**Zip:**', value=zipcode, inline=False)
+            .set_footer(text=f'Calling Code: {calling} | Lat: {lat} | Long: {long}')
+            .set_thumbnail(url=flag)
         )
 
         await ctx.send(embed=embed)
@@ -144,21 +153,22 @@ class Fun(commands.Cog):
             category = 'deleted'
 
         try:
-            snipe = self.bot.cache[str(ctx.guild.id)][str(ctx.channel.id)]['messages'][category][0]
-            author = ctx.guild.get_member(snipe.author) or await self.bot.fetch_user(snipe.author)
+            snipe  = self.bot.cache[str(ctx.guild.id)][str(ctx.channel.id)]['messages'][category][0]
+            author = BetterUserConverter(ctx, snipe.author)
+            avatar = author.avatar_url_as(static_format='png')
 
             embed = Embed(
                 title=f'In #{snipe.channel} | Around {naturaltime(snipe.when)}.',
                 colour=randint(0, 0xffffff)
-            ).set_author(name=f'{author} ({author.id})', icon_url=author.avatar_url_as(static_format='png'))
+            ).set_author(name=f'{author} ({author.id})', icon_url=avatar)
 
             if category == 'deleted':
-                embed.description = f'```diff\n- {utils.escape_markdown(snipe.content)}```'
+                desc = f'```diff\n- {snipe.content.replace('`', '')}```'
             else:
-                embed.description = f"```diff\n- {utils.escape_markdown(snipe.content['b'])}\n+ {utils.escape_markdown(snipe.content['a'])}```"
+                desc = f"```diff\n- {(snipe.content['b'].replace('`', '')}\n+ {snipe.content['a'].replace('`', '')}```"
+            embed.description = desc
 
-            attachments = snipe.attachments
-            if attachments:
+            if attachments := snipe.attachments:
                 embed.add_field(name='**Attachments**', value='\n'.join(a.proxy_url for a in attachments))
 
             await ctx.send(embed=embed)
