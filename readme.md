@@ -119,10 +119,10 @@ A rewrote version of Ft.-Gunna
         - Upload binary output to file if haste fails.
         - Use mystbin instead of haste.
 
-      0.6.2:
+       0.6.2:
         - Instead of a raw deque, deleted & edited messages are now stored in a MessageCache.
         - Added use_embed kwarg to ctx.reply for a quick embed reply
 
-     0.6.3:
+       0.6.3:
         - Added a BetterUserConverter to meta.
         - General code improvements.
