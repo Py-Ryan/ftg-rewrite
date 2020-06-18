@@ -14,14 +14,16 @@ class Events(commands.Cog):
     @commands.Cog.listener()
     async def on_message_delete(self, message):
         if not message.author.bot:
-            channel = self.bot.cache[str(message.guild.id)][str(message.channel.id)]['messages']['deleted']
+            guild   = str(message.guild.id)
+            channel = str(message.channel.id)
+            entry   = self.bot.cache[guild][channel]['messages']['deleted']
 
-            channel.appendleft(
+            entry.appendleft(
                     type(self).deque_message(
-                    content=message.content,
-                    author=message.author.id,
                     when=datetime.now(),
+                    content=message.content,
                     channel=message.channel.name,
+                    author=str(message.author.id),
                     attachments=message.attachments
                 )
             )
@@ -29,15 +31,17 @@ class Events(commands.Cog):
     @commands.Cog.listener()
     async def on_message_edit(self, before, after):
         if not after.author.bot:
-            channel = self.bot.cache[str(after.guild.id)][str(after.channel.id)]['messages']['edited']
+            guild   = str(before.guild.id)
+            channel = str(before.channel.id)
+            entry   = self.bot.cache[guild][channel]['messages']['edited']
 
-            channel.appendleft(
+            entry.appendleft(
                     type(self).deque_message(
-                    content={'b': before.content, 'a': after.content},
-                    author=after.author.id,
                     when=datetime.now(),
                     channel=after.channel.name,
-                    attachments=after.attachments
+                    author=str(before.author.id),
+                    attachments=after.attachments,
+                    content={'b': before.content, 'a': after.content}
                 )
             )
 

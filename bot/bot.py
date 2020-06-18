@@ -14,7 +14,7 @@ from traceback import format_exception
 
 
 with open('bot/config.toml', 'r') as file:
-    config = toml.load(file).get('credentials', None)
+    config = toml.load(file).get('credentials')
 
     if not {'token', 'db_url'} <= set(config):
         raise ValueError("TOML config file missing `token` and/or `db_url` keys.")
@@ -79,11 +79,12 @@ class Ftg(commands.Bot):
                 self.load_extension(f'cogs.{ext[:-3]}')
                 print(f'Loaded {ext}.')
 
-        (self.db, self.session) = (await create_pool(
+        self.db = await create_pool(
             self.db_url,
             min_size=1,
             max_size=5,
-        ), ClientSession())
+        )
+        self.session = ClientSession()
 
         async with self.session.get('https://raw.githubusercontent.com/Py-Ryan/ftg-rewrite/master/readme.md') as get:
             self.__version__ = (await get.text()).split("\n")[4]
@@ -101,8 +102,8 @@ class Ftg(commands.Bot):
 
         for (name, obj) in self.cogs.items():
             with open(f'./cogs/{name.lower()}.py', encoding='utf8') as extension:
+                obj.db  = self.db
                 obj.loc = len(extension.readlines())
-                obj.db = self.db
                 obj._raw_uptime = datetime.now()
 
         self.load_extension("jishaku")
@@ -131,8 +132,8 @@ class Ftg(commands.Bot):
 
             async with self.session.post('https://mystb.in/documents', data=tb) as post:
                 key = (await post.json()).get('key', None)
-                tb = f'https://mystb.in/raw/{key}' if key else None
-
+                tb  = f'https://mystb.in/raw/{key}' if key else None
+                
             embed = (
                 Embed(
                     title='Unhandled Exception \❌',
@@ -150,7 +151,8 @@ class Ftg(commands.Bot):
 
 def get_prefix(bot, message):
     try:
-        prefix = bot.cache.get(str(message.guild.id), {'prefix': 'gn '})['prefix']
+        key = str(message.guild.id)
+        prefix = bot.cache.get(key, {'prefix': 'gn '})['prefix']
         return commands.when_mentioned_or(prefix)(bot, message)
     except AttributeError:
         return commands.when_mentioned_or('gn ')(bot, message)

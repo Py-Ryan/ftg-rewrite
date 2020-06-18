@@ -37,12 +37,12 @@ class Fun(commands.Cog):
     @staticmethod
     async def _attachment_helper(ctx):
         output = ''
-        if attachments := ctx.message.attachments:
-            for attachment in attachments:
-                try:
-                    output += ''.join((await attachment.read()).decode('utf-8').replace(' ', '\n'))
-                except UnicodeDecodeError:
-                    return await ctx.reply('use text files.')
+
+        for attachment in ctx.message.attachments:
+            try:
+                output += ''.join((await attachment.read()).decode('utf-8').replace(' ', '\n'))
+            except UnicodeDecodeError:
+                return await ctx.reply('use text files.')
 
         return output
 
@@ -54,7 +54,8 @@ class Fun(commands.Cog):
 
         try:
             binary = insert_spaces(text.strip(), 8)
-            if len(text) % 8 and all(re.match(type(self).binary_regex, b) for b in binary):
+            input_is_binary = all(re.match(type(self).binary_regex, b) for b in binary)
+            if len(text) % 8 and input_is_binary:
                 output = ''.join([chr(int(byte, 2)) for byte in binary]).replace('\n', ' ')
             else:
                 raise ValueError
@@ -153,8 +154,11 @@ class Fun(commands.Cog):
             category = 'deleted'
 
         try:
-            snipe  = self.bot.cache[str(ctx.guild.id)][str(ctx.channel.id)]['messages'][category][0]
-            author = BetterUserConverter(ctx, snipe.author)
+            guild  = str(ctx.guild.id)
+            channl = str(ctx.channel.id)
+
+            snipe  = self.bot.cache[guild][channl]['messages'][category][0]
+            author = await BetterUserConverter().convert(ctx, snipe.author)
             avatar = author.avatar_url_as(static_format='png')
 
             embed = Embed(
@@ -163,10 +167,12 @@ class Fun(commands.Cog):
             ).set_author(name=f'{author} ({author.id})', icon_url=avatar)
 
             if category == 'deleted':
-                desc = f"```diff\n- {snipe.content.replace('`', '')}```"
+                deleted_content   = snipe.content.replace('`', '')
+                embed.description = f"```diff\n- {deleted_content}```"
             else:
-                desc = f"```diff\n- {snipe.content['b'].replace('`', '')}\n+ {snipe.content['a'].replace('`', '')}```"
-            embed.description = desc
+                after_content     = snipe.content['a'].replace('`', '')
+                before_content    = snipe.content['b'].replace('`', '')
+                embed.description = f'```diff\n- {before_content}\n+ {after_content}```'
 
             if attachments := snipe.attachments:
                 embed.add_field(name='**Attachments**', value='\n'.join(a.proxy_url for a in attachments))

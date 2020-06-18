@@ -2,7 +2,7 @@
 A rewrote version of Ft.-Gunna
 
 # version:
-0.6.4
+0.6.5
 
 # updates:
       0.1.0:
@@ -132,3 +132,7 @@ A rewrote version of Ft.-Gunna
         - Commands with input tend to default to the author if the input is invalid.
         - Fixed BetterUserConverter suppression. Had incorrect type to suppress.
         - Fixed ip command from breaking with no input.
+
+       0.6.5:
+        - Fixed BetterUserConverter from returning None in message sniping.
+        - Improved readability a good amount.

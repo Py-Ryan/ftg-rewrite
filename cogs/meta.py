@@ -43,18 +43,18 @@ class Meta(commands.Cog):
         uid      = snwflake.id
         desc     =  f'[Avatar Link]({snwflake.avatar_url})' if uid != self.bot.user.id else git
         colour   = self.status_cases[getattr(snwflake, 'status', Status.offline)]
-        avatar   = str(snwflake.avatar_url_as(static_format='png'))
+        avatar   = snwflake.avatar_url_as(static_format='png')
         joined   = naturaltime(getattr(snwflake, 'joined_at', 'None'))
         created  = naturaltime(snwflake.created_at)
-        top_role = str(getattr(snwflake, 'top_role', None))
+        top_role = getattr(snwflake, 'top_role', None)
 
         embed = (
             Embed(title=str(snwflake), colour=colour, description=desc)
             .add_field(name='**Account Created**', value=created, inline=True)
             .add_field(name='**Joined**', value=joined, inline=True)
             .add_field(name='**User ID**', value=uid, inline=False)
-            .add_field(name='**Top Role**', value=top_role, inline=False)
-            .set_thumbnail(url=avatar)
+            .add_field(name='**Top Role**', value=str(top_role), inline=False)
+            .set_thumbnail(url=str(avatar))
         )
 
         if isinstance(snwflake, User):
@@ -110,14 +110,14 @@ class Meta(commands.Cog):
 
         with suppress(TimeoutError):
             check = lambda r, u: (
-                u is user or 
+                u is user or
                 r.message.channel.permissions_for(u).manage_messages or
                 u.id == 700091773695033505
             )
             (reaction, user) = await self.bot.wait_for('reaction_add', check=check, timeout=900)
 
-            if str(reaction) == '\u23f9':
-                await message.delete()
+        if str(reaction) == '\u23f9':
+            await message.delete()
 
     @commands.command()
     @commands.has_permissions(administrator=True)
