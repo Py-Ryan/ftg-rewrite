@@ -2,7 +2,7 @@
 A rewrote version of Ft.-Gunna
 
 # version:
-0.6.5
+0.6.6
 
 # updates:
       0.1.0:
@@ -136,3 +136,8 @@ A rewrote version of Ft.-Gunna
        0.6.5:
         - Fixed BetterUserConverter from returning None in message sniping.
         - Improved readability a good amount.
+
+       0.6.6:
+        - Added utils for various utils.
+          - Added dispatchers.
+        - Refactored the info command to use helper dispatchers. MUCH shorter.
