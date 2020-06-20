@@ -3,7 +3,8 @@ from contextlib import suppress
 from humanize import naturaltime
 from discord.ext import commands
 from typing import Union, Optional
-from discord import User, Embed, Member, Status, Colour, HTTPException
+from .utils.dispatchers import _info_embed_builder
+from discord import User, Embed, Member, Status, Colour, HTTPException, ClientUser
 
 
 class BetterUserConverter(commands.Converter):
@@ -26,51 +27,13 @@ class Meta(commands.Cog):
 
     def __init__(self, bot):
         self.bot = bot
-        self.status_cases = {
-            Status.online: Colour.green(),
-            Status.idle: Colour.orange(),
-            Status.dnd: Colour.red(),
-            Status.offline: Colour.light_grey()
-        }
 
     @commands.group(invoke_without_command=True)
     @commands.guild_only()
     @commands.cooldown(1, 1.5, commands.BucketType.guild)
-    async def info(self, ctx, *, snwflake: Union[Member, BetterUserConverter, str] = None):
-        snwflake = ctx.author if snwflake == 'me' else snwflake or ctx.guild.me
-
-        git      = f'[Source Code](https://github.com/Py-Ryan/ftg-rewrite)'
-        uid      = snwflake.id
-        desc     =  f'[Avatar Link]({snwflake.avatar_url})' if uid != self.bot.user.id else git
-        colour   = self.status_cases[getattr(snwflake, 'status', Status.offline)]
-        avatar   = snwflake.avatar_url_as(static_format='png')
-        joined   = naturaltime(getattr(snwflake, 'joined_at', 'None'))
-        created  = naturaltime(snwflake.created_at)
-        top_role = getattr(snwflake, 'top_role', None)
-
-        embed = (
-            Embed(title=str(snwflake), colour=colour, description=desc)
-            .add_field(name='**Account Created**', value=created, inline=True)
-            .add_field(name='**Joined**', value=joined, inline=True)
-            .add_field(name='**User ID**', value=uid, inline=False)
-            .add_field(name='**Top Role**', value=str(top_role), inline=False)
-            .set_thumbnail(url=str(avatar))
-        )
-
-        if isinstance(snwflake, User):
-            embed.set_footer(text='This user is not in this guild.')
-            for i in (-1, -2):
-                embed.remove_field(i)
-
-        if snwflake is ctx.guild.me:
-            uptime  = self.bot.uptime
-            version = self.bot.__version__
-            latency = round(self.bot.latency * 1000)
-
-            embed.add_field(name='**Uptime**', value=uptime)
-            embed.add_field(name='**Latency**', value=f'{latency}ms', inline=False)
-            embed.set_footer(text=f'Developer: well in that case#0082 (700091773695033505) | Version: {version}')
-
+    async def info(self, ctx, *, user: Union[Member, BetterUserConverter, str] = None):
+        user  = user or self.bot.user
+        embed = _info_embed_builder(ctx, user)
         await ctx.send(embed=embed)
 
     @info.command(name='cog')
