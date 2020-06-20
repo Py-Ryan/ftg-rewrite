@@ -75,7 +75,7 @@ class Ftg(commands.Bot):
     async def start(self):
         """Connects the bot to discord & mounts the cogs."""
         for ext in self.modules:
-            if not ext.startswith('__'):
+            if not ext.startswith('__') and ext.endswith('.py'):
                 self.load_extension(f'cogs.{ext[:-3]}')
                 print(f'Loaded {ext}.')
 
@@ -133,7 +133,7 @@ class Ftg(commands.Bot):
             async with self.session.post('https://mystb.in/documents', data=tb) as post:
                 key = (await post.json()).get('key', None)
                 tb  = f'https://mystb.in/raw/{key}' if key else None
-                
+
             embed = (
                 Embed(
                     title='Unhandled Exception \❌',
